@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🦒 Safari AR - Find the Animals!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; font-family: 'Fredoka One', sans-serif; }
+
+  #loading {
+    position: fixed; inset: 0; background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 100; color: white; text-align: center; padding: 2rem;
+  }
+  #loading h1 { font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 0 0 20px rgba(255,200,0,0.8); }
+  #loading p { font-size: 1.1rem; color: #aad4f5; margin-bottom: 2rem; }
+  #loading .animals { font-size: 3rem; letter-spacing: 0.5rem; animation: bounce 1s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  #startBtn {
+    background: linear-gradient(135deg, #f9a825, #f57f17);
+    border: none; border-radius: 50px; padding: 1rem 2.5rem;
+    font-size: 1.4rem; font-family: 'Fredoka One', sans-serif;
+    color: white; cursor: pointer; box-shadow: 0 4px 20px rgba(249,168,37,0.5);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);box-shadow:0 4px 20px rgba(249,168,37,0.5)} 50%{transform:scale(1.05);box-shadow:0 4px 30px rgba(249,168,37,0.8)} }
+
+  #gameCanvas { display: block; width: 100vw; height: 100vh; }
+
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0; pointer-events: none;
+    padding: 1rem; display: flex; justify-content: space-between; align-items: flex-start;
+    z-index: 10;
+  }
+  #score-box {
+    background: rgba(0,0,0,0.6); border-radius: 16px; padding: 0.5rem 1rem;
+    color: white; font-size: 1.2rem; border: 2px solid rgba(255,200,0,0.6);
+    backdrop-filter: blur(8px);
+  }
+  #found-box {
+    background: rgba(0,0,0,0.6); border-radius: 16px; padding: 0.5rem 1rem;
+    color: #7ef; font-size: 0.95rem; border: 2px solid rgba(100,220,255,0.4);
+    backdrop-filter: blur(8px); max-width: 55vw; text-align: right;
+  }
+
+  #hint {
+    position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.7); color: white; border-radius: 20px;
+    padding: 0.6rem 1.4rem; font-size: 1rem; z-index: 10;
+    border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+    transition: opacity 0.5s; text-align: center; max-width: 85vw;
+  }
+
+  #catch-btn {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+    background: linear-gradient(135deg, #43a047, #1b5e20);
+    border: none; border-radius: 50px; padding: 0.9rem 2.5rem;
+    font-size: 1.3rem; font-family: 'Fredoka One', sans-serif;
+    color: white; cursor: pointer; z-index: 10; display: none;
+    box-shadow: 0 4px 20px rgba(67,160,71,0.6); pointer-events: all;
+  }
+
+  #popup {
+    position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+    z-index: 50; background: rgba(0,0,0,0.5);
+  }
+  #popup-inner {
+    background: linear-gradient(135deg, #1a237e, #283593);
+    border-radius: 24px; padding: 2rem; text-align: center; color: white;
+    border: 3px solid rgba(255,200,0,0.7); max-width: 320px; width: 85vw;
+    box-shadow: 0 0 40px rgba(255,200,0,0.4);
+  }
+  #popup-emoji { font-size: 5rem; }
+  #popup-name { font-size: 2rem; margin: 0.5rem 0; color: #ffd54f; }
+  #popup-msg { font-size: 1rem; color: #b3e5fc; margin-bottom: 1.2rem; }
+  #popup-btn {
+    background: linear-gradient(135deg, #f9a825, #e65100);
+    border: none; border-radius: 50px; padding: 0.7rem 2rem;
+    font-size: 1.2rem; font-family: 'Fredoka One', sans-serif;
+    color: white; cursor: pointer;
+  }
+
+  #win-screen {
+    position: fixed; inset: 0; display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #1a237e, #0d47a1);
+    z-index: 60; color: white; text-align: center; padding: 2rem;
+  }
+  #win-screen h1 { font-size: 3rem; color: #ffd54f; text-shadow: 0 0 20px gold; }
+  #win-screen p { font-size: 1.2rem; margin: 1rem 0 2rem; color: #b3e5fc; }
+  #win-screen .trophies { font-size: 4rem; }
+
+  #gyro-note {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.85); color: #ffd54f; border-radius: 16px;
+    padding: 1.5rem; font-size: 1rem; text-align: center; z-index: 20;
+    max-width: 280px; display: none; border: 2px solid rgba(255,200,0,0.5);
+  }
+
+  canvas { touch-action: none; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loading">
+  <div class="animals">🦒🐘🐵🦘🍎🥒</div>
+  <h1>Safari AR</h1>
+  <p>Find animals & fruits hiding<br>around your home! 🏠</p>
+  <p style="font-size:0.9rem;color:#ffd54f;margin-bottom:1.5rem;">
+    📱 Hold phone upright · Walk around to look
+  </p>
+  <button id="startBtn" onclick="startGame()">Start Adventure! 🚀</button>
+  <p style="font-size:0.8rem;color:#5c7a9e;margin-top:1.5rem;">
+    Allow camera when asked
+  </p>
+</div>
+
+<!-- GAME CANVAS -->
+<canvas id="gameCanvas"></canvas>
+
+<!-- HUD -->
+<div id="hud">
+  <div id="score-box">⭐ <span id="score">0</span></div>
+  <div id="found-box" id="found-box">🔍 Look around!</div>
+</div>
+<div id="hint">👀 Move your phone to look around your room</div>
+<button id="catch-btn" onclick="catchObject()">🤚 Catch It!</button>
+
+<!-- CATCH POPUP -->
+<div id="popup">
+  <div id="popup-inner">
+    <div id="popup-emoji">🦒</div>
+    <div id="popup-name">Giraffe!</div>
+    <div id="popup-msg">You found a giraffe in the living room!</div>
+    <button id="popup-btn" onclick="closePopup()">Keep Exploring! 🗺</button>
+  </div>
+</div>
+
+<!-- WIN SCREEN -->
+<div id="win-screen">
+  <div class="trophies">🏆🎉🌟</div>
+  <h1>You Win!</h1>
+  <p id="win-msg">You found all the animals and fruits!</p>
+  <button id="popup-btn" style="font-family:'Fredoka One';font-size:1.3rem;background:linear-gradient(135deg,#f9a825,#e65100);border:none;border-radius:50px;padding:0.8rem 2rem;color:white;cursor:pointer" onclick="resetGame()">Play Again! 🔄</button>
+</div>
+
+<div id="gyro-note">
+  📳 <strong>Tip:</strong> Move & rotate your phone physically to look around and discover hidden creatures!
+</div>
+
+<!-- THREE.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ─── OBJECTS TO FIND ───────────────────────────────────────────────────────
+const OBJECTS = [
+  { id:'giraffe',  emoji:'🦒', name:'Giraffe',     color:0xF4A460, room:'living room',   type:'animal', spots:true  },
+  { id:'elephant', emoji:'🐘', name:'Elephant',    color:0x808080, room:'kitchen',       type:'animal'             },
+  { id:'monkey',   emoji:'🐵', name:'Monkey',      color:0x8B6914, room:'bathroom',      type:'animal'             },
+  { id:'kangaroo', emoji:'🦘', name:'Kangaroo',    color:0xD2691E, room:'bedroom',       type:'animal'             },
+  { id:'winnie',   emoji:'🐻', name:'Winnie',      color:0xDAA520, room:'hallway',       type:'animal', ears:true   },
+  { id:'chase',    emoji:'🐕', name:'Chase',       color:0xA0522D, room:'living room',   type:'animal', dog:true    },
+  { id:'skye',     emoji:'🦺', name:'Skye',        color:0xFF69B4, room:'kitchen',       type:'animal', dog:true    },
+  { id:'apple',    emoji:'🍎', name:'Apple',       color:0xFF2222, room:'sofa',          type:'fruit'              },
+  { id:'orange',   emoji:'🍊', name:'Orange',      color:0xFF8C00, room:'dining table',  type:'fruit'              },
+  { id:'tomato',   emoji:'🍅', name:'Tomato',      color:0xFF4500, room:'counter',       type:'fruit'              },
+  { id:'cucumber', emoji:'🥒', name:'Cucumber',    color:0x228B22, room:'sofa',          type:'fruit', elongated:true },
+  { id:'banana',   emoji:'🍌', name:'Banana',      color:0xFFE135, room:'bedroom',       type:'fruit', curved:true  },
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let scene, camera, renderer;
+let objects3d = [];
+let nearestObj = null;
+let score = 0;
+let foundIds = new Set();
+let catchTimeout = null;
+const TOTAL = OBJECTS.length;
+
+// ─── CAMERA & GYRO ─────────────────────────────────────────────────────────
+let deviceAlpha = 0, deviceBeta = 90, deviceGamma = 0;
+let touchStartX = 0, touchStartY = 0;
+let manualYaw = 0, manualPitch = 0;
+let hasGyro = false;
+
+function onDeviceOrientation(e) {
+  if (e.alpha !== null) {
+    deviceAlpha = e.alpha || 0;
+    deviceBeta  = e.beta  || 90;
+    deviceGamma = e.gamma || 0;
+    hasGyro = true;
+  }
+}
+
+// ─── THREE.JS SETUP ────────────────────────────────────────────────────────
+function initThree() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 1.6, 0);
+
+  renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gameCanvas'), alpha: true, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  // Lighting
+  const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+  scene.add(ambient);
+  const sun = new THREE.DirectionalLight(0xfff0d0, 1.2);
+  sun.position.set(3, 8, 5);
+  scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xd0e8ff, 0.4);
+  fill.position.set(-5, 3, -5);
+  scene.add(fill);
+
+  placeObjects();
+  window.addEventListener('resize', onResize);
+  document.getElementById('gameCanvas').addEventListener('touchstart', onTouchStart, { passive: true });
+  document.getElementById('gameCanvas').addEventListener('touchmove',  onTouchMove,  { passive: true });
+  window.addEventListener('deviceorientation', onDeviceOrientation);
+
+  animate();
+}
+
+// ─── OBJECT PLACEMENT ──────────────────────────────────────────────────────
+function placeObjects() {
+  const radius = 3.5;
+  OBJECTS.forEach((def, i) => {
+    const angle = (i / OBJECTS.length) * Math.PI * 2;
+    const x = Math.sin(angle) * radius + (Math.random() - 0.5) * 1.5;
+    const z = Math.cos(angle) * radius + (Math.random() - 0.5) * 1.5;
+    const mesh = buildMesh(def);
+    mesh.position.set(x, 0, z);
+    mesh.userData = { ...def, angle };
+    scene.add(mesh);
+    objects3d.push(mesh);
+
+    // Floating label
+    const label = makeLabel(def.emoji + ' ' + def.name);
+    label.position.set(x, 1.6, z);
+    label.userData = { isLabel: true };
+    scene.add(label);
+    mesh.userData.label = label;
+  });
+}
+
+function buildMesh(def) {
+  const group = new THREE.Group();
+
+  if (def.type === 'fruit') {
+    buildFruit(group, def);
+  } else {
+    buildAnimal(group, def);
+  }
+
+  return group;
+}
+
+// ─── FRUIT BUILDER ─────────────────────────────────────────────────────────
+function buildFruit(group, def) {
+  const mat = new THREE.MeshLambertMaterial({ color: def.color });
+  let body;
+
+  if (def.elongated) {
+    // Cucumber – tall cylinder
+    body = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.9, 12), mat);
+    body.rotation.z = 0.3;
+  } else if (def.curved) {
+    // Banana – use a curved series of cylinders
+    for (let i = 0; i < 8; i++) {
+      const t = i / 7;
+      const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.09 - t * 0.03, 0.09 - t * 0.03, 0.18, 8), mat);
+      seg.position.set(Math.sin(t * 1.2) * 0.35, t * 0.5 - 0.2, 0);
+      seg.rotation.z = -t * 0.4 + 0.2;
+      group.add(seg);
+    }
+    group.position.y = 0.5;
+    return;
+  } else {
+    body = new THREE.Mesh(new THREE.SphereGeometry(0.42, 20, 16), mat);
+  }
+  body.position.y = 0.5;
+  group.add(body);
+
+  // Stem
+  const stemMat = new THREE.MeshLambertMaterial({ color: 0x2d5a1b });
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.18, 6), stemMat);
+  stem.position.y = def.elongated ? 1.0 : 0.93;
+  group.add(stem);
+
+  // Leaf for apple/tomato
+  if (!def.elongated && !def.curved) {
+    const leafMat = new THREE.MeshLambertMaterial({ color: 0x2d8a1b, side: THREE.DoubleSide });
+    const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.22, 4), leafMat);
+    leaf.position.set(0.1, 1.05, 0);
+    leaf.rotation.z = 0.5;
+    group.add(leaf);
+  }
+}
+
+// ─── ANIMAL BUILDER ────────────────────────────────────────────────────────
+function buildAnimal(group, def) {
+  const mat = new THREE.MeshLambertMaterial({ color: def.color });
+  const darkMat = new THREE.MeshLambertMaterial({ color: darkenColor(def.color) });
+  const eyeMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
+  const whiteMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+
+  // Body
+  const bodyH = def.id === 'giraffe' ? 0.6 : 0.5;
+  const bodyW = def.id === 'elephant' ? 0.55 : 0.38;
+  const body = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 10), mat);
+  body.scale.set(bodyW, bodyH, 0.38);
+  body.position.y = def.id === 'giraffe' ? 0.75 : 0.65;
+  group.add(body);
+
+  // Head
+  const headScale = def.id === 'elephant' ? 0.38 : 0.28;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(headScale, 12, 10), mat);
+  const headY = body.position.y + bodyH + headScale * 0.6;
+  const headZ = def.id === 'giraffe' ? 0 : 0.28;
+  head.position.set(0, headY, headZ);
+  group.add(head);
+
+  // Eyes
+  [-0.1, 0.1].forEach(x => {
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), whiteMat);
+    eye.position.set(x, headY + 0.05, headZ + headScale * 0.85);
+    group.add(eye);
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 8), eyeMat);
+    pupil.position.set(x * 0.6, headY + 0.05, headZ + headScale * 0.87 + 0.02);
+    group.add(pupil);
+  });
+
+  // Giraffe neck
+  if (def.id === 'giraffe') {
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 0.7, 8), mat);
+    neck.position.set(0, body.position.y + bodyH * 0.5, 0);
+    group.add(neck);
+    // Spots
+    for (let i = 0; i < 8; i++) {
+      const spot = new THREE.Mesh(new THREE.SphereGeometry(0.07 + Math.random() * 0.05, 6, 6), darkMat);
+      const a = Math.random() * Math.PI * 2;
+      spot.position.set(Math.cos(a) * 0.36, 0.5 + Math.random() * 0.5, Math.sin(a) * 0.36);
+      group.add(spot);
+    }
+    // Horns
+    [-0.1, 0.1].forEach(x => {
+      const horn = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.04, 0.18, 6), darkMat);
+      horn.position.set(x, headY + headScale, headZ);
+      group.add(horn);
+    });
+  }
+
+  // Elephant trunk
+  if (def.id === 'elephant') {
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 0.55, 8), mat);
+    trunk.rotation.x = 0.8;
+    trunk.position.set(0, headY - 0.15, headZ + headScale * 0.9);
+    group.add(trunk);
+    // Big ears
+    [-1, 1].forEach(side => {
+      const ear = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8), mat);
+      ear.scale.set(0.35, 1, 0.12);
+      ear.position.set(side * (headScale + 0.15), headY, headZ - 0.05);
+      group.add(ear);
+    });
+  }
+
+  // Monkey tail
+  if (def.id === 'monkey') {
+    for (let i = 0; i < 6; i++) {
+      const t = i / 5;
+      const seg = new THREE.Mesh(new THREE.SphereGeometry(0.06 - t * 0.02, 6, 6), mat);
+      seg.position.set(Math.sin(t * 2.5) * 0.4 - 0.3, 0.3 + t * 0.4, -0.35 - t * 0.1);
+      group.add(seg);
+    }
+    // Monkey face — lighter muzzle
+    const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 8), new THREE.MeshLambertMaterial({ color: 0xF5CBA7 }));
+    muzzle.scale.set(1, 0.7, 0.6);
+    muzzle.position.set(0, headY - 0.04, headZ + headScale * 0.7);
+    group.add(muzzle);
+  }
+
+  // Kangaroo pouch
+  if (def.id === 'kangaroo') {
+    const pouch = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 8), darkMat);
+    pouch.scale.set(1, 0.7, 0.6);
+    pouch.position.set(0, body.position.y - 0.15, 0.35);
+    group.add(pouch);
+    // Baby in pouch
+    const baby = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), mat);
+    baby.position.set(0, body.position.y + 0.02, 0.42);
+    group.add(baby);
+  }
+
+  // Winnie Pooh ears & red shirt
+  if (def.id === 'winnie') {
+    [-0.22, 0.22].forEach(x => {
+      const ear = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), mat);
+      ear.position.set(x, headY + headScale * 0.8, headZ);
+      group.add(ear);
+    });
+    const shirt = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshLambertMaterial({ color: 0xcc2200 }));
+    shirt.scale.set(bodyW * 0.9, bodyH * 0.6, 0.35);
+    shirt.position.set(0, body.position.y - 0.05, 0);
+    group.add(shirt);
+  }
+
+  // Dogs (Chase & Skye) — paw patrol style with collar
+  if (def.dog) {
+    const collarMat = new THREE.MeshLambertMaterial({ color: def.id === 'chase' ? 0x0000ff : 0xff69b4 });
+    const collar = new THREE.Mesh(new THREE.TorusGeometry(headScale * 0.9, 0.04, 8, 16), collarMat);
+    collar.rotation.x = Math.PI / 2;
+    collar.position.set(0, headY - headScale * 0.4, headZ);
+    group.add(collar);
+    // Badge / tag
+    const badge = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.04, 10), new THREE.MeshLambertMaterial({ color: 0xffd700 }));
+    badge.position.set(0, headY - headScale * 0.45, headZ + headScale * 0.8);
+    group.add(badge);
+    // Dog ears
+    [-0.18, 0.18].forEach((x, i) => {
+      const ear = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.22, 6), mat);
+      ear.position.set(x, headY + headScale * 0.75, headZ);
+      if (def.id === 'skye') ear.rotation.z = i === 0 ? 0.4 : -0.4;
+      group.add(ear);
+    });
+  }
+
+  // Legs for all animals
+  const legPositions = [[-0.2, 0, 0.15], [0.2, 0, 0.15], [-0.18, 0, -0.15], [0.18, 0, -0.15]];
+  legPositions.forEach(([lx, , lz]) => {
+    const legH = def.id === 'giraffe' ? 0.6 : 0.35;
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, legH, 8), mat);
+    leg.position.set(lx, legH / 2, lz);
+    group.add(leg);
+  });
+}
+
+function darkenColor(hex) {
+  const r = ((hex >> 16) & 0xff) * 0.6 | 0;
+  const g = ((hex >> 8)  & 0xff) * 0.6 | 0;
+  const b = (hex & 0xff)         * 0.6 | 0;
+  return (r << 16) | (g << 8) | b;
+}
+
+// ─── SPRITE LABEL ──────────────────────────────────────────────────────────
+function makeLabel(text) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256; canvas.height = 80;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
+  roundRect(ctx, 4, 4, 248, 72, 16);
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 36px Fredoka One, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, 128, 52);
+  const tex = new THREE.CanvasTexture(canvas);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(1.4, 0.42, 1);
+  return sprite;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath(); ctx.fill();
+}
+
+// ─── TOUCH CONTROLS ────────────────────────────────────────────────────────
+function onTouchStart(e) {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}
+function onTouchMove(e) {
+  if (hasGyro) return;
+  const dx = e.touches[0].clientX - touchStartX;
+  const dy = e.touches[0].clientY - touchStartY;
+  manualYaw   -= dx * 0.003;
+  manualPitch -= dy * 0.003;
+  manualPitch = Math.max(-1.2, Math.min(1.2, manualPitch));
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}
+
+// ─── CAMERA UPDATE ─────────────────────────────────────────────────────────
+const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+function updateCamera() {
+  if (hasGyro) {
+    const alpha = THREE.MathUtils.degToRad(deviceAlpha);
+    const beta  = THREE.MathUtils.degToRad(deviceBeta);
+    const gamma = THREE.MathUtils.degToRad(deviceGamma);
+    euler.set(beta - Math.PI / 2, -alpha, -gamma, 'YXZ');
+  } else {
+    euler.set(manualPitch, manualYaw, 0, 'YXZ');
+  }
+  camera.quaternion.setFromEuler(euler);
+}
+
+// ─── NEAREST OBJECT ────────────────────────────────────────────────────────
+const camDir = new THREE.Vector3();
+function findNearest() {
+  camera.getWorldDirection(camDir);
+  let bestScore = -Infinity;
+  let best = null;
+
+  objects3d.forEach(obj => {
+    if (foundIds.has(obj.userData.id)) return;
+    const toObj = new THREE.Vector3().subVectors(obj.position, camera.position);
+    const dist = toObj.length();
+    if (dist > 8) return;
+    toObj.normalize();
+    const dot = camDir.dot(toObj);
+    const score = dot - dist * 0.05;
+    if (score > bestScore) { bestScore = score; best = obj; }
+  });
+
+  if (best && bestScore > 0.5) {
+    nearestObj = best;
+    const d = camera.position.distanceTo(best.position);
+    document.getElementById('catch-btn').style.display = d < 2.5 ? 'block' : 'none';
+    document.getElementById('hint').textContent = `🎯 ${best.userData.name} spotted in the ${best.userData.room}!`;
+    updateFoundBox();
+  } else {
+    nearestObj = null;
+    document.getElementById('catch-btn').style.display = 'none';
+    if (Math.floor(Date.now() / 5000) % 2 === 0) {
+      const remaining = OBJECTS.filter(o => !foundIds.has(o.id));
+      if (remaining.length > 0) {
+        const next = remaining[Math.floor(Math.random() * remaining.length)];
+        document.getElementById('hint').textContent = `🔍 Find the ${next.name} in the ${next.room}!`;
+      }
+    }
+  }
+}
+
+function updateFoundBox() {
+  const found = [...foundIds].map(id => OBJECTS.find(o => o.id === id)?.emoji).join('');
+  const remaining = TOTAL - foundIds.size;
+  document.getElementById('found-box').textContent = found.length
+    ? `${found} · ${remaining} left`
+    : `🔍 ${remaining} to find`;
+}
+
+// ─── CATCH LOGIC ───────────────────────────────────────────────────────────
+function catchObject() {
+  if (!nearestObj || foundIds.has(nearestObj.userData.id)) return;
+  const def = nearestObj.userData;
+
+  // Animate scale up then disappear
+  const obj = nearestObj;
+  let t = 0;
+  const anim = setInterval(() => {
+    t += 0.05;
+    obj.scale.set(1 + t * 0.5, 1 + t * 0.5, 1 + t * 0.5);
+    obj.material && (obj.material.opacity = 1 - t);
+    if (t >= 1) {
+      clearInterval(anim);
+      obj.visible = false;
+      if (obj.userData.label) obj.userData.label.visible = false;
+    }
+  }, 30);
+
+  foundIds.add(def.id);
+  score += def.type === 'animal' ? 10 : 5;
+  document.getElementById('score').textContent = score;
+  document.getElementById('catch-btn').style.display = 'none';
+
+  // Show popup
+  document.getElementById('popup-emoji').textContent = def.emoji;
+  document.getElementById('popup-name').textContent = def.name + '!';
+  document.getElementById('popup-msg').textContent =
+    `You found the ${def.name} in the ${def.room}! +${def.type === 'animal' ? 10 : 5} stars ⭐`;
+  document.getElementById('popup').style.display = 'flex';
+
+  if (foundIds.size >= TOTAL) {
+    setTimeout(() => showWin(), 1800);
+  }
+}
+
+function closePopup() {
+  document.getElementById('popup').style.display = 'none';
+}
+
+function showWin() {
+  closePopup();
+  document.getElementById('win-msg').textContent =
+    `You found all ${TOTAL} creatures and earned ${score} stars! 🌟`;
+  document.getElementById('win-screen').style.display = 'flex';
+}
+
+function resetGame() {
+  foundIds.clear(); score = 0;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('win-screen').style.display = 'none';
+  document.getElementById('found-box').textContent = '🔍 Look around!';
+  objects3d.forEach(obj => {
+    obj.visible = true;
+    obj.scale.set(1, 1, 1);
+    if (obj.userData.label) obj.userData.label.visible = true;
+  });
+}
+
+// ─── ANIMATION ─────────────────────────────────────────────────────────────
+let frame = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  frame++;
+
+  // Gentle bob & spin on all objects
+  objects3d.forEach((obj, i) => {
+    if (!obj.visible) return;
+    obj.position.y = Math.sin(frame * 0.02 + i * 1.2) * 0.08;
+    obj.rotation.y += 0.005;
+  });
+
+  updateCamera();
+  if (frame % 10 === 0) findNearest();
+
+  renderer.render(scene, camera);
+}
+
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+// ─── START GAME ────────────────────────────────────────────────────────────
+async function startGame() {
+  document.getElementById('loading').style.display = 'none';
+
+  // Camera stream as background
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    const video = document.createElement('video');
+    video.srcObject = stream;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('autoplay', '');
+    video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;';
+    document.body.insertBefore(video, document.body.firstChild);
+    document.getElementById('gameCanvas').style.background = 'transparent';
+  } catch(e) {
+    document.getElementById('gameCanvas').style.background = 'linear-gradient(135deg,#1a2744,#2d4a8a)';
+  }
+
+  // Request gyroscope permission (iOS 13+)
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    try {
+      const perm = await DeviceOrientationEvent.requestPermission();
+      if (perm === 'granted') hasGyro = false; // will be set by event
+    } catch(e) {}
+  }
+
+  // Show gyro tip after 2s if no gyro
+  setTimeout(() => {
+    if (!hasGyro) {
+      const el = document.getElementById('gyro-note');
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 4000);
+    }
+  }, 2000);
+
+  initThree();
+  updateFoundBox();
+}
+</script>
+</body>
+</html>
