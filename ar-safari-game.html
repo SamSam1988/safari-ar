@@ -9,109 +9,117 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#000; overflow:hidden; font-family:'Fredoka One',sans-serif; touch-action:none; }
 
-/* ── VIDEO BG ── */
 #videoBg {
   position:fixed; inset:0; width:100%; height:100%;
   object-fit:cover; z-index:0;
 }
 #noCamBg {
-  position:fixed; inset:0; z-index:0;
-  background: linear-gradient(160deg,#0f2027,#203a43,#2c5364);
-  display:none;
+  position:fixed; inset:0; z-index:0; display:none;
+  background:linear-gradient(160deg,#0f2027,#203a43,#2c5364);
 }
-
-/* ── CANVAS over video ── */
 #gameCanvas {
   position:fixed; inset:0; width:100%; height:100%;
   z-index:1; background:transparent;
 }
 
-/* ── CARDBOARD VR mode: split video into two eyes ── */
+/* VR */
 body.vr-mode #videoBg { display:none; }
-#vrLeft, #vrRight {
+#vrLeft,#vrRight {
   display:none; position:fixed; top:0; width:50%; height:100%;
   overflow:hidden; z-index:0;
 }
-#vrLeft  { left:0; }
-#vrRight { right:0; }
-#vrLeft  video, #vrRight video { width:200%; height:100%; object-fit:cover; }
-#vrLeft  video { margin-left:0; }
-#vrRight video { margin-left:-100%; }
+#vrLeft { left:0; } #vrRight { right:0; }
+#vrLeft video  { width:200%; height:100%; object-fit:cover; }
+#vrRight video { width:200%; height:100%; object-fit:cover; margin-left:-100%; }
 body.vr-mode #vrLeft,
 body.vr-mode #vrRight { display:block; }
-body.vr-mode #gameCanvas { z-index:1; }
-
-/* ── VR divider line ── */
 #vrDivider {
   display:none; position:fixed; left:50%; top:0; bottom:0;
   width:4px; background:#000; z-index:9; transform:translateX(-50%);
 }
 body.vr-mode #vrDivider { display:block; }
 
-/* ── LOADING ── */
+/* LOADING */
 #loading {
   position:fixed; inset:0;
-  background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+  background:linear-gradient(135deg,#0d1b2a,#1b2a3a,#162032);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   z-index:200; color:#fff; text-align:center; padding:2rem;
 }
-#loading .critters { font-size:3.5rem; margin-bottom:1rem; animation:hop 1.2s infinite; }
-@keyframes hop { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-#loading h1 { font-size:2.8rem; color:#ffd54f; text-shadow:0 0 24px rgba(255,200,0,.8); margin-bottom:.4rem; }
-#loading p  { font-size:1rem; color:#aad4f5; line-height:1.6; max-width:300px; margin:.4rem auto; }
+#loading .critters { font-size:3.5rem; margin-bottom:.8rem; animation:hop 1.4s infinite; }
+@keyframes hop { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+#loading h1 { font-size:2.6rem; color:#ffd54f; text-shadow:0 0 24px rgba(255,200,0,.7); margin-bottom:.3rem; }
+#loading p  { font-size:1rem; color:#aad4f5; line-height:1.6; max-width:300px; margin:.35rem auto; }
 #startBtn {
-  margin-top:1.5rem; background:linear-gradient(135deg,#f9a825,#e65100);
-  border:none; border-radius:50px; padding:1rem 2.5rem;
-  font-size:1.4rem; font-family:'Fredoka One',sans-serif;
-  color:#fff; cursor:pointer;
-  animation:pulse 2s infinite;
+  margin-top:1.5rem;
+  background:linear-gradient(135deg,#f9a825,#e65100);
+  border:none; border-radius:50px; padding:1rem 2.8rem;
+  font-size:1.5rem; font-family:'Fredoka One',sans-serif;
+  color:#fff; cursor:pointer; animation:pulse 2s infinite;
 }
 @keyframes pulse {
-  0%,100%{transform:scale(1); box-shadow:0 4px 20px rgba(249,168,37,.5)}
-  50%{transform:scale(1.05); box-shadow:0 4px 30px rgba(249,168,37,.9)}
+  0%,100%{transform:scale(1);box-shadow:0 4px 20px rgba(249,168,37,.5)}
+  50%{transform:scale(1.06);box-shadow:0 4px 32px rgba(249,168,37,.9)}
 }
 
-/* ── HUD ── */
+/* HUD */
 #hud {
   position:fixed; top:0; left:0; right:0; z-index:10;
   padding:.8rem 1rem; display:flex; justify-content:space-between; align-items:flex-start;
   pointer-events:none;
 }
-.hud-pill {
-  background:rgba(0,0,0,.65); border-radius:20px; padding:.4rem .9rem;
-  color:#fff; font-size:1rem; border:1.5px solid rgba(255,220,0,.5);
-  backdrop-filter:blur(6px);
+.pill {
+  background:rgba(0,0,0,.62); border-radius:20px; padding:.4rem .9rem;
+  color:#fff; font-size:1rem; border:1.5px solid rgba(255,220,0,.45);
+  backdrop-filter:blur(8px);
 }
-#found-box { color:#7ef; border-color:rgba(100,220,255,.4); max-width:55vw; text-align:right; }
+#found-box { color:#7ef; border-color:rgba(100,220,255,.35); max-width:55vw; text-align:right; }
 
-/* ── BOTTOM BAR ── */
+/* BOTTOM BAR */
 #bottomBar {
   position:fixed; bottom:0; left:0; right:0; z-index:10;
-  padding:.7rem 1rem 1.2rem; display:flex;
-  align-items:center; justify-content:space-between; gap:.5rem;
-  background:rgba(0,0,0,.5); backdrop-filter:blur(8px);
-  border-top:1px solid rgba(255,255,255,.1);
+  padding:.7rem 1rem 1.1rem;
+  display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+  background:rgba(0,0,0,.48); backdrop-filter:blur(10px);
+  border-top:1px solid rgba(255,255,255,.08);
 }
 #hint-text {
-  flex:1; color:#fff; font-size:.92rem; text-align:center; line-height:1.3;
+  flex:1; color:#fff; font-size:.9rem; text-align:center; line-height:1.35;
+  padding:0 .4rem;
 }
 #catchBtn {
   background:linear-gradient(135deg,#43a047,#1b5e20);
-  border:none; border-radius:50px; padding:.7rem 1.4rem;
-  font-size:1.1rem; font-family:'Fredoka One',sans-serif;
+  border:none; border-radius:50px; padding:.7rem 1.3rem;
+  font-size:1.05rem; font-family:'Fredoka One',sans-serif;
   color:#fff; cursor:pointer; white-space:nowrap;
-  box-shadow:0 3px 16px rgba(67,160,71,.6); display:none; pointer-events:all;
+  box-shadow:0 3px 16px rgba(67,160,71,.55); display:none; pointer-events:all;
+  animation:glow .9s infinite alternate;
 }
+@keyframes glow { from{box-shadow:0 3px 14px rgba(67,160,71,.5)} to{box-shadow:0 3px 28px rgba(67,160,71,.95)} }
 #vrBtn {
-  background:rgba(255,255,255,.12); border:1.5px solid rgba(255,255,255,.35);
-  border-radius:50px; padding:.55rem 1rem;
-  font-size:1rem; font-family:'Fredoka One',sans-serif;
-  color:#fff; cursor:pointer; white-space:nowrap; pointer-events:all;
-  flex-shrink:0;
+  background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.3);
+  border-radius:50px; padding:.5rem .95rem;
+  font-size:.95rem; font-family:'Fredoka One',sans-serif;
+  color:#fff; cursor:pointer; white-space:nowrap; pointer-events:all; flex-shrink:0;
 }
-#vrBtn:active { background:rgba(255,255,255,.25); }
 
-/* ── CATCH POPUP ── */
+/* REVEAL RING – shown on screen when approaching a creature zone */
+#revealRing {
+  position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:120px; height:120px; border-radius:50%;
+  border:4px solid rgba(255,220,0,0); z-index:8; pointer-events:none;
+  transition:border-color .3s, transform .3s;
+}
+#revealRing.active {
+  border-color:rgba(255,220,0,.85);
+  animation:ring 1s infinite;
+}
+@keyframes ring {
+  0%{transform:translate(-50%,-50%) scale(1);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1.5);opacity:0}
+}
+
+/* POPUP */
 #popup {
   position:fixed; inset:0; display:none; align-items:center; justify-content:center;
   z-index:50; background:rgba(0,0,0,.55);
@@ -120,7 +128,9 @@ body.vr-mode #vrDivider { display:block; }
   background:linear-gradient(135deg,#1a237e,#283593);
   border-radius:24px; padding:2rem 1.5rem; text-align:center; color:#fff;
   border:3px solid rgba(255,200,0,.7); max-width:300px; width:88vw;
+  animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);
 }
+@keyframes popIn { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
 #popup-emoji { font-size:5rem; }
 #popup-name  { font-size:2rem; color:#ffd54f; margin:.3rem 0; }
 #popup-msg   { font-size:.95rem; color:#b3e5fc; margin-bottom:1.2rem; }
@@ -130,7 +140,7 @@ body.vr-mode #vrDivider { display:block; }
   font-size:1.2rem; font-family:'Fredoka One',sans-serif; color:#fff; cursor:pointer;
 }
 
-/* ── WIN ── */
+/* WIN */
 #win {
   position:fixed; inset:0; display:none; flex-direction:column;
   align-items:center; justify-content:center;
@@ -139,57 +149,42 @@ body.vr-mode #vrDivider { display:block; }
 }
 #win h1 { font-size:3rem; color:#ffd54f; }
 #win p  { font-size:1.1rem; color:#b3e5fc; margin:1rem 0 2rem; }
-
-/* ── DRAG JOYSTICK (no gyro fallback) ── */
-#joystick {
-  position:fixed; right:1.2rem; bottom:5.5rem; z-index:15;
-  width:80px; height:80px; border-radius:50%;
-  background:rgba(255,255,255,.18); border:2px solid rgba(255,255,255,.4);
-  display:flex; align-items:center; justify-content:center;
-  color:#fff; font-size:.75rem; text-align:center; line-height:1.2;
-  user-select:none;
-}
 </style>
 </head>
 <body>
 
-<!-- CAMERA BACKGROUNDS -->
 <video id="videoBg" autoplay playsinline muted></video>
 <div id="noCamBg"></div>
-
-<!-- VR SPLIT EYE PANELS -->
 <div id="vrLeft"><video id="vrVidL" autoplay playsinline muted></video></div>
 <div id="vrRight"><video id="vrVidR" autoplay playsinline muted></video></div>
 <div id="vrDivider"></div>
-
-<!-- 3D CANVAS -->
 <canvas id="gameCanvas"></canvas>
 
-<!-- LOADING SCREEN -->
+<!-- LOADING -->
 <div id="loading">
-  <div class="critters">🦒🐘🐵🦘🐻🐕🍎🥒</div>
+  <div class="critters">🦒🐘🐵🦘🐻🍎🥒🍌</div>
   <h1>Safari AR!</h1>
-  <p>Animals & giant fruits are hiding<br>all around your home 🏠</p>
-  <p style="color:#ffd54f;font-size:.9rem">📱 Tap START then look around<br>with your phone camera!</p>
-  <button id="startBtn" onclick="startGame()">▶ Start Adventure!</button>
-  <p style="font-size:.75rem;color:#4a6fa0;margin-top:1rem">Allow camera access when asked</p>
+  <p>Animals & giant fruits are hiding in every room of your home 🏠</p>
+  <p style="color:#ffd54f;font-size:.9rem">📱 Walk room to room —<br>when you get close, they appear!</p>
+  <button id="startBtn" onclick="startGame()">▶ Let's Go!</button>
+  <p style="font-size:.75rem;color:#4a6fa0;margin-top:.9rem">Allow camera when asked</p>
 </div>
 
 <!-- HUD -->
 <div id="hud">
-  <div class="hud-pill">⭐ <span id="scoreVal">0</span></div>
-  <div class="hud-pill" id="found-box">🔍 Look around!</div>
+  <div class="pill">⭐ <span id="scoreVal">0</span></div>
+  <div class="pill" id="found-box">0 / 12 found</div>
 </div>
+
+<!-- REVEAL RING -->
+<div id="revealRing"></div>
 
 <!-- BOTTOM BAR -->
 <div id="bottomBar">
   <button id="vrBtn" onclick="toggleVR()">📦 Cardboard</button>
-  <span id="hint-text">👀 Move your phone to find creatures!</span>
+  <span id="hint-text">Walk into each room to find creatures!</span>
   <button id="catchBtn" onclick="catchIt()">🤚 Catch!</button>
 </div>
-
-<!-- JOYSTICK hint (no gyro) -->
-<div id="joystick" id="joystick">drag<br>to look</div>
 
 <!-- POPUP -->
 <div id="popup">
@@ -197,651 +192,782 @@ body.vr-mode #vrDivider { display:block; }
     <div id="popup-emoji">🦒</div>
     <div id="popup-name">Giraffe!</div>
     <div id="popup-msg"></div>
-    <button class="pop-btn" onclick="closePopup()">Keep Looking! 🗺</button>
+    <button class="pop-btn" onclick="closePopup()">Keep Exploring! 🗺</button>
   </div>
 </div>
 
 <!-- WIN -->
 <div id="win">
   <div style="font-size:4rem">🏆🎉🌟</div>
-  <h1>You Won!</h1>
+  <h1>You Win!</h1>
   <p id="win-msg"></p>
   <button class="pop-btn" onclick="resetGame()">Play Again 🔄</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ═══════════════════════════════════════════════════════════
-// OBJECT DEFINITIONS
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// CREATURE DEFINITIONS — one per zone, spread far apart
+// ═══════════════════════════════════════════════════════
 const DEFS = [
-  {id:'giraffe',  emoji:'🦒', name:'Giraffe',   color:0xF4A460, accent:0x8B5E3C, room:'living room',  pts:10},
-  {id:'elephant', emoji:'🐘', name:'Elephant',   color:0x9E9E9E, accent:0x616161, room:'kitchen',      pts:10},
-  {id:'monkey',   emoji:'🐵', name:'Monkey',     color:0x8D6E63, accent:0xF5CBA7, room:'bathroom',     pts:10},
-  {id:'kangaroo', emoji:'🦘', name:'Kangaroo',   color:0xBC8A5F, accent:0x8B5E3C, room:'bedroom',      pts:10},
-  {id:'winnie',   emoji:'🐻', name:'Winnie Pooh',color:0xDAA520, accent:0xCC2200, room:'hallway',      pts:10},
-  {id:'chase',    emoji:'🐕', name:'Chase',      color:0xA0522D, accent:0x0000CC, room:'living room',  pts:10},
-  {id:'skye',     emoji:'🦺', name:'Skye',       color:0xE8A0B0, accent:0xFF1493, room:'bedroom',      pts:10},
-  {id:'apple',    emoji:'🍎', name:'Apple',      color:0xDD2222, accent:0x228B22, room:'on the sofa',  pts:5},
-  {id:'orange',   emoji:'🍊', name:'Orange',     color:0xFF8C00, accent:0x228B22, room:'dining table', pts:5},
-  {id:'tomato',   emoji:'🍅', name:'Tomato',     color:0xFF3E00, accent:0x228B22, room:'kitchen counter',pts:5},
-  {id:'cucumber', emoji:'🥒', name:'Cucumber',   color:0x2E8B22, accent:0x1A5C14, room:'on the sofa',  pts:5},
-  {id:'banana',   emoji:'🍌', name:'Banana',     color:0xFFE135, accent:0x9B8000, room:'bedroom',      pts:5},
+  {id:'giraffe',  emoji:'🦒', name:'Giraffe',    color:0xE8A838, accent:0x7A4A1A, room:'Living Room',  pts:10, height:0},
+  {id:'elephant', emoji:'🐘', name:'Elephant',   color:0x8A8FA8, accent:0x5A5F78, room:'Kitchen',      pts:10, height:0},
+  {id:'monkey',   emoji:'🐵', name:'Monkey',     color:0x9C7248, accent:0xF5D5A0, room:'Bathroom',     pts:10, height:0},
+  {id:'kangaroo', emoji:'🦘', name:'Kangaroo',   color:0xC28A55, accent:0x8A5A28, room:'Bedroom',      pts:10, height:0},
+  {id:'winnie',   emoji:'🐻', name:'Winnie Pooh',color:0xE0AE30, accent:0xCC2200, room:'Hallway',      pts:10, height:0},
+  {id:'chase',    emoji:'🐕', name:'Chase',      color:0xB8733A, accent:0x1a44cc, room:'Study Room',   pts:10, height:0},
+  {id:'apple',    emoji:'🍎', name:'Giant Apple', color:0xDD2020, accent:0x228B22, room:'Dining Table', pts:5,  height:0.55},
+  {id:'orange',   emoji:'🍊', name:'Giant Orange',color:0xFF8000, accent:0x228B22, room:'Kitchen Counter',pts:5,height:0.55},
+  {id:'tomato',   emoji:'🍅', name:'Giant Tomato',color:0xFF3800, accent:0x228B22, room:'Windowsill',   pts:5,  height:0.55},
+  {id:'cucumber', emoji:'🥒', name:'Cucumber',   color:0x2E8B22, accent:0x1A5C14, room:'on the Sofa',  pts:5,  height:0.45},
+  {id:'banana',   emoji:'🍌', name:'Banana',     color:0xFFE135, accent:0xA89000, room:'Coffee Table',  pts:5,  height:0.5},
+  {id:'skye',     emoji:'🦺', name:'Skye',       color:0xF0A0C0, accent:0xFF1493, room:'Kids Room',    pts:10, height:0},
 ];
 
-// ═══════════════════════════════════════════════════════════
-// THREE.JS GLOBALS
-// ═══════════════════════════════════════════════════════════
-let scene, renderer;
-let camL, camR;   // left & right eye cameras (for VR)
+// ═══════════════════════════════════════════════════════
+// PLACE CREATURES IN ZONES — a wide ring, well separated
+// ═══════════════════════════════════════════════════════
+// Each zone is a 3D position. Player starts at origin.
+// Zones are in a large spread — 5 to 9 m away, different angles
+const ZONES = DEFS.map((d, i) => {
+  const angle = (i / DEFS.length) * Math.PI * 2 + 0.3;
+  const dist  = 5 + (i % 4) * 1.1;   // 5 – 8.3 m
+  return {
+    x: Math.sin(angle) * dist,
+    y: d.height,                       // animals on floor, fruits on surface height
+    z: Math.cos(angle) * dist,
+    def: d,
+    revealed: false,
+    mesh: null,
+    scale: 0,
+  };
+});
+
+// ═══════════════════════════════════════════════════════
+// THREE.JS
+// ═══════════════════════════════════════════════════════
+let scene, renderer, camL, camR;
 let vrMode = false;
-const objects3d = [];
-let nearObj = null;
 let score = 0;
 const found = new Set();
+let nearZone = null;
+let activeReveal = null; // zone currently being revealed
 
-// ═══════════════════════════════════════════════════════════
-// ORIENTATION / LOOK DIRECTION
-// ═══════════════════════════════════════════════════════════
-let yaw = 0, pitch = 0;
-let gyroAlpha = 0, gyroBeta = 90, gyroGamma = 0;
-let hasGyro = false;
-let touchX = 0, touchY = 0, dragging = false;
-
-window.addEventListener('deviceorientation', e => {
-  if (e.alpha != null) {
-    gyroAlpha = e.alpha || 0;
-    gyroBeta  = e.beta  || 90;
-    gyroGamma = e.gamma || 0;
-    hasGyro = true;
-    document.getElementById('joystick').style.display = 'none';
-  }
-});
-
-document.addEventListener('touchstart', e => {
-  // ignore UI buttons
-  if (e.target.tagName === 'BUTTON') return;
-  touchX = e.touches[0].clientX;
-  touchY = e.touches[0].clientY;
-  dragging = true;
-}, {passive:true});
-document.addEventListener('touchmove', e => {
-  if (!dragging || hasGyro) return;
-  const dx = e.touches[0].clientX - touchX;
-  const dy = e.touches[0].clientY - touchY;
-  yaw   -= dx * 0.004;
-  pitch -= dy * 0.003;
-  pitch = Math.max(-1.1, Math.min(1.1, pitch));
-  touchX = e.touches[0].clientX;
-  touchY = e.touches[0].clientY;
-}, {passive:true});
-document.addEventListener('touchend', () => dragging = false, {passive:true});
-
-// Also mouse for desktop testing
-let mouseDown = false, mx = 0, my = 0;
-document.addEventListener('mousedown', e => { mouseDown=true; mx=e.clientX; my=e.clientY; });
-document.addEventListener('mouseup',   () => mouseDown=false);
-document.addEventListener('mousemove', e => {
-  if (!mouseDown) return;
-  yaw   -= (e.clientX-mx)*0.004; pitch -= (e.clientY-my)*0.003;
-  pitch = Math.max(-1.1,Math.min(1.1,pitch));
-  mx=e.clientX; my=e.clientY;
-});
-
-// ═══════════════════════════════════════════════════════════
-// BUILD SCENE
-// ═══════════════════════════════════════════════════════════
 function initThree() {
   scene = new THREE.Scene();
+  // NO fog, NO helpers, NO grid
 
-  // Two cameras for VR split
-  camL = new THREE.PerspectiveCamera(65, window.innerWidth/window.innerHeight, 0.05, 120);
-  camR = new THREE.PerspectiveCamera(65, (window.innerWidth/2)/window.innerHeight, 0.05, 120);
+  camL = new THREE.PerspectiveCamera(65, window.innerWidth/window.innerHeight, 0.05, 150);
+  camR = new THREE.PerspectiveCamera(65, (window.innerWidth/2)/window.innerHeight, 0.05, 150);
   camL.position.set(0, 1.5, 0);
   camR.position.set(0, 1.5, 0);
 
-  renderer = new THREE.WebGLRenderer({
-    canvas: document.getElementById('gameCanvas'),
-    alpha: true, antialias: true
-  });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gameCanvas'), alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
   renderer.autoClear = false;
 
-  // Lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-  const sun = new THREE.DirectionalLight(0xfff5d0, 1.3);
-  sun.position.set(4, 8, 5);
-  scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xd0e8ff, 0.5);
-  fill.position.set(-4, 3, -6);
-  scene.add(fill);
+  // Rich lighting
+  scene.add(new THREE.AmbientLight(0xfff8e8, 0.8));
+  const sun = new THREE.DirectionalLight(0xfff5d0, 1.4);
+  sun.position.set(5, 10, 6); scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xc8dff8, 0.5);
+  fill.position.set(-5, 4, -7); scene.add(fill);
+  const rim = new THREE.DirectionalLight(0xffd080, 0.3);
+  rim.position.set(0, -3, 5); scene.add(rim);
 
-  // Floor grid (visual reference)
-  const gridHelper = new THREE.GridHelper(40, 40, 0x444466, 0x333355);
-  gridHelper.position.y = -0.05;
-  scene.add(gridHelper);
+  // Build all meshes but start invisible / scale 0
+  ZONES.forEach(zone => {
+    const grp = buildCreature(zone.def);
+    grp.position.set(zone.x, zone.y, zone.z);
+    grp.lookAt(0, grp.position.y, 0);
+    grp.scale.set(0,0,0);   // hidden until reveal
+    grp.visible = true;
+    scene.add(grp);
+    zone.mesh = grp;
+    zone.def.group = grp;
+  });
 
-  spawnObjects();
   window.addEventListener('resize', onResize);
   animate();
 }
 
-// ═══════════════════════════════════════════════════════════
-// SPAWN OBJECTS AROUND PLAYER
-// ═══════════════════════════════════════════════════════════
-function spawnObjects() {
-  DEFS.forEach((def, i) => {
-    const angle = (i / DEFS.length) * Math.PI * 2;
-    // Vary distance 3–5 m so they're all easily visible
-    const dist  = 3.5 + (i % 3) * 0.7;
-    const x = Math.sin(angle) * dist;
-    const z = Math.cos(angle) * dist;
-
-    const group = buildCreature(def);
-    group.position.set(x, 0, z);
-    group.lookAt(0, group.position.y, 0); // face the player
-    group.userData = { ...def };
-    scene.add(group);
-    objects3d.push(group);
-
-    // Floating label above creature
-    const lbl = makeLabel(def.emoji + ' ' + def.name);
-    lbl.position.set(x, 1.9, z);
-    lbl.userData = { isLabel: true };
-    scene.add(lbl);
-    group.userData.label = lbl;
+// ═══════════════════════════════════════════════════════
+// CREATURE BUILDERS — detailed, no labels
+// ═══════════════════════════════════════════════════════
+function m(color, rough=0.75, metal=0) {
+  return new THREE.MeshStandardMaterial({color, roughness:rough, metalness:metal});
+}
+function sphere(color, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(1,22,18), m(color));
+  mesh.scale.set(sx,sy,sz); mesh.position.set(px,py,pz);
+  mesh.rotation.set(rx,ry,rz); return mesh;
+}
+function cyl(color, rt,rb,h, px,py,pz, rx=0,ry=0,rz=0, seg=10) {
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg), m(color));
+  mesh.position.set(px,py,pz); mesh.rotation.set(rx,ry,rz); return mesh;
+}
+function cone(color, r,h, px,py,pz, rx=0,ry=0,rz=0) {
+  const mesh = new THREE.Mesh(new THREE.ConeGeometry(r,h,10), m(color));
+  mesh.position.set(px,py,pz); mesh.rotation.set(rx,ry,rz); return mesh;
+}
+function box(color, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz), m(color));
+  mesh.position.set(px,py,pz); mesh.rotation.set(rx,ry,rz); return mesh;
+}
+function torus(color, R,r,seg=12,tseg=18, px,py,pz, rx=0) {
+  const mesh = new THREE.Mesh(new THREE.TorusGeometry(R,r,seg,tseg), m(color));
+  mesh.position.set(px,py,pz); mesh.rotation.x=rx; return mesh;
+}
+function eyes(g, c, py, pz, sep=0.1) {
+  [-sep,sep].forEach(x => {
+    g.add(sphere(0xffffff, .055,.055,.04, x,py,pz));
+    g.add(sphere(0x111111, .032,.032,.032, x*.65,py,pz+.03));
+    g.add(sphere(0xffffff, .012,.012,.012, x*.65+.012,py+.01,pz+.042));
   });
 }
-
-// ═══════════════════════════════════════════════════════════
-// CREATURE BUILDER – proper 3D shapes ~1 m tall
-// ═══════════════════════════════════════════════════════════
-function mat(color) { return new THREE.MeshLambertMaterial({color}); }
+function nostrils(g, c, py, pz, sep=0.055) {
+  [-sep,sep].forEach(x => g.add(sphere(0x3a1a0a,.03,.025,.02, x,py,pz)));
+}
+function addLegs(g, color, legY, legH, spreadX, spreadZ, knee=false) {
+  [[-spreadX,0,-spreadZ],[spreadX,0,-spreadZ],[-spreadX,0,spreadZ],[spreadX,0,spreadZ]]
+  .forEach(([lx,,lz]) => {
+    g.add(cyl(color,.072,.065,legH, lx,legY,lz));
+    // hoof
+    g.add(sphere(0x2a1a0a, .08,.055,.08, lx,legY-legH/2-.02,lz));
+  });
+}
 
 function buildCreature(def) {
   const g = new THREE.Group();
-  if (def.id === 'apple' || def.id === 'orange' || def.id === 'tomato')
-    buildRoundFruit(g, def);
-  else if (def.id === 'cucumber')
-    buildCucumber(g, def);
-  else if (def.id === 'banana')
-    buildBanana(g, def);
-  else if (def.id === 'giraffe')
-    buildGiraffe(g, def);
-  else if (def.id === 'elephant')
-    buildElephant(g, def);
-  else if (def.id === 'monkey')
-    buildMonkey(g, def);
-  else if (def.id === 'kangaroo')
-    buildKangaroo(g, def);
-  else if (def.id === 'winnie')
-    buildWinnie(g, def);
-  else
-    buildDog(g, def);
+  const c = def.color, a = def.accent;
+  switch(def.id) {
+    case 'giraffe':   buildGiraffe(g,c,a); break;
+    case 'elephant':  buildElephant(g,c,a); break;
+    case 'monkey':    buildMonkey(g,c,a); break;
+    case 'kangaroo':  buildKangaroo(g,c,a); break;
+    case 'winnie':    buildWinnie(g,c,a); break;
+    case 'chase':     buildDog(g,c,a,'chase'); break;
+    case 'skye':      buildDog(g,c,a,'skye'); break;
+    case 'apple':     buildRoundFruit(g,c,a,false); break;
+    case 'orange':    buildRoundFruit(g,c,a,false,true); break;
+    case 'tomato':    buildRoundFruit(g,c,a,true); break;
+    case 'cucumber':  buildCucumber(g,c,a); break;
+    case 'banana':    buildBanana(g,c,a); break;
+  }
   return g;
 }
 
-// ── helpers ──
-function addSphere(g, color, rx, ry, rz, px, py, pz, rotX=0, rotZ=0) {
-  const m = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 12), mat(color));
-  m.scale.set(rx, ry, rz);
-  m.position.set(px, py, pz);
-  m.rotation.x = rotX; m.rotation.z = rotZ;
-  g.add(m); return m;
-}
-function addCyl(g, color, rt, rb, h, px, py, pz, rotX=0, rotZ=0, segs=8) {
-  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, segs), mat(color));
-  m.position.set(px, py, pz);
-  m.rotation.x = rotX; m.rotation.z = rotZ;
-  g.add(m); return m;
-}
-function addCone(g, color, r, h, px, py, pz, rotX=0, rotZ=0) {
-  const m = new THREE.Mesh(new THREE.ConeGeometry(r, h, 8), mat(color));
-  m.position.set(px, py, pz); m.rotation.x=rotX; m.rotation.z=rotZ;
-  g.add(m); return m;
-}
-function eyes(g, py, pz, hs=0.1) {
-  [-hs, hs].forEach(x => {
-    addSphere(g, 0xffffff,  0.055, 0.055, 0.04,  x, py, pz);
-    addSphere(g, 0x111111,  0.03,  0.03,  0.03,  x*0.7, py, pz+0.025);
+function buildGiraffe(g,c,a) {
+  // Legs (long)
+  [[-0.18,0,-0.12],[0.18,0,-0.12],[-0.15,0,0.12],[0.15,0,0.12]].forEach(([x,,z]) => {
+    g.add(cyl(c,.072,.065,.68, x,.34,z));  // upper leg
+    g.add(cyl(a,.06,.055,.32, x,-.02,z));  // lower leg darker
+    g.add(sphere(0x1a0a00,.09,.06,.09, x,-.22,z)); // hoof
   });
-}
-
-// ── GIRAFFE ──
-function buildGiraffe(g, d) {
-  addCyl(g, d.color, .18,.22,.55,  0, .28, 0);          // body
-  addCyl(g, d.color, .10,.14,.72,  0, .78, 0);          // neck
-  addSphere(g, d.color, .22,.2,.2,  0,1.3,.08);          // head
-  eyes(g, 1.34, .28, .09);
-  // nostrils
-  addSphere(g, d.accent, .04,.03,.02,  -.05,1.2,.3);
-  addSphere(g, d.accent, .04,.03,.02,   .05,1.2,.3);
-  // horns
-  addCyl(g, d.accent, .02,.03,.14,  -.1,1.45,.0);
-  addCyl(g, d.accent, .02,.03,.14,   .1,1.45,.0);
-  // legs
-  [-.16,.16].forEach(x => [-.12,.12].forEach(z => addCyl(g, d.color, .06,.055,.4, x,.2,z)));
-  // spots on neck/body
-  for(let i=0;i<9;i++) {
-    const a = Math.random()*Math.PI*2, r=.2;
-    addSphere(g, d.accent, .07,.06,.04, Math.cos(a)*r, .4+Math.random()*.9, Math.sin(a)*r);
+  // Body
+  g.add(sphere(c, .38,.32,.28, 0,.78,0));
+  // Neck (tall)
+  g.add(cyl(c,.13,.18,.75, 0,1.22,0));
+  // Head
+  g.add(sphere(c, .24,.2,.22, 0,1.74,.1));
+  // Long snout
+  g.add(sphere(c,.16,.1,.18, 0,1.65,.32));
+  nostrils(g,a,1.6,.48,.05);
+  eyes(g,c,1.78,.28,.1);
+  // Ossicones (horns)
+  [-0.1,0.1].forEach(x => {
+    g.add(cyl(a,.025,.035,.18, x,1.93,.04));
+    g.add(sphere(a,.04,.04,.04, x,2.03,.04));
+  });
+  // Mane along neck
+  for(let i=0;i<5;i++) {
+    const t=i/4;
+    g.add(cone(a,.05,.18, 0,0.88+t*.36,-.12, -.3));
   }
-  // tail
-  addCyl(g, d.color, .03,.02,.25, .0,.45,-.22, -.6);
+  // Spots on body & neck
+  for(let i=0;i<14;i++) {
+    const ang=Math.random()*Math.PI*2, r=.34+Math.random()*.06;
+    const yy = .55+Math.random()*.9;
+    g.add(sphere(a,.09+Math.random()*.04,.07,.04, Math.cos(ang)*r,yy,Math.sin(ang)*r));
+  }
+  // Tail
+  g.add(cyl(c,.025,.02,.28, 0,.68,-.3, .6));
+  g.add(sphere(a,.05,.08,.05, 0,.54,-.44));
 }
 
-// ── ELEPHANT ──
-function buildElephant(g, d) {
-  addSphere(g, d.color, .42,.38,.35,  0,.5,0);           // body
-  addSphere(g, d.color, .3,.28,.28,   0,1.0,.2);          // head
-  // big ears
-  [-1,1].forEach(s => addSphere(g, d.accent, .12,.32,.05, s*.48,1.0,.08));
-  // trunk
-  addCyl(g, d.color, .07,.1,.5,  0,.72,.5, .9);
-  // tusks
-  [-1,1].forEach(s => addCyl(g, 0xFFFDE7, .04,.03,.28, s*.12,.78,.52, .4, s*.25));
-  eyes(g, 1.06, .47);
-  // legs
-  [-.18,.18].forEach(x => [-.12,.12].forEach(z => addCyl(g, d.color, .09,.085,.35, x,.18,z)));
-  // tail
-  addCyl(g, d.color, .025,.02,.18, 0,.55,-.34, .5);
-}
-
-// ── MONKEY ──
-function buildMonkey(g, d) {
-  addSphere(g, d.color, .3,.3,.28,  0,.44,0);             // body
-  addSphere(g, d.color, .22,.22,.2,  0,.86,.08);           // head
-  addSphere(g, d.accent, .14,.1,.1,  0,.8,.24);            // muzzle
-  // big ears
-  [-1,1].forEach(s => addSphere(g, d.accent, .1,.1,.05, s*.28,.88,.04));
-  eyes(g, .9, .28, .08);
-  // arms
+function buildElephant(g,c,a) {
+  // Legs (thick)
+  [[-0.22,0,-0.14],[0.22,0,-0.14],[-0.2,0,0.14],[0.2,0,0.14]].forEach(([x,,z]) => {
+    g.add(cyl(c,.12,.1,.42, x,.21,z));
+    g.add(sphere(0x1a1a1a,.13,.07,.13, x,-.04,z));
+  });
+  // Body (big)
+  g.add(sphere(c,.52,.48,.42, 0,.72,0));
+  // Neck
+  g.add(cyl(c,.22,.26,.18, 0,1.1,.08));
+  // Head (big domed)
+  g.add(sphere(c,.38,.35,.34, 0,1.38,.1));
+  // Big ears
   [-1,1].forEach(s => {
-    addCyl(g, d.color, .055,.05,.35, s*.32,.58,0, 0, s*.8);
-    addSphere(g, d.color, .08,.07,.07, s*.55,.42,0);       // hand
+    g.add(sphere(c,.14,.44,.06, s*.52,1.38,.04)); // main ear
+    g.add(sphere(a,.11,.36,.04, s*.52,1.36,.06)); // inner ear pink
   });
-  // legs
-  [-.1,.1].forEach(x => {
-    addCyl(g, d.color, .065,.06,.32, x,.2,0);
-    addSphere(g, d.color, .08,.065,.08, x,.04,0);          // foot
-  });
-  // tail
-  for(let i=0;i<7;i++){
+  // Trunk (segmented curve)
+  for(let i=0;i<7;i++) {
     const t=i/6;
-    const m=new THREE.Mesh(new THREE.SphereGeometry(.05,8,8), mat(d.color));
-    m.position.set(Math.sin(t*2.2)*.38-.15, .28+t*.45, -.28-t*.05);
-    g.add(m);
+    const mesh=new THREE.Mesh(new THREE.SphereGeometry(.1-.015*t,10,8), m(c));
+    mesh.scale.set(1,.65,1);
+    mesh.position.set(0, 1.12-.18*t, .44+Math.sin(t*1.5)*.28);
+    g.add(mesh);
+    // wrinkle rings
+    if(i%2===0) g.add(cyl(a,.105-.015*t,.105-.015*t,.04, 0,1.12-.18*t,.44+Math.sin(t*1.5)*.28));
   }
-}
-
-// ── KANGAROO ──
-function buildKangaroo(g, d) {
-  addSphere(g, d.color, .28,.42,.26,  0,.62,0);            // body (upright)
-  addSphere(g, d.color, .22,.2,.18,   0,1.12,.1);           // head
-  // ears
-  [-1,1].forEach(s => addCone(g, d.color, .07,.2, s*.1,1.35,.08, 0,s*.15));
-  eyes(g, 1.16, .26, .09);
-  // short arms
-  [-1,1].forEach(s => addCyl(g, d.color, .05,.045,.22, s*.28,.82,0, 0, s*.7));
-  // big hind legs
+  // Tusks
   [-1,1].forEach(s => {
-    addCyl(g, d.color, .09,.08,.48, s*.14,.3,0);
-    addCyl(g, d.color, .065,.06,.32, s*.14,.06,.18, .5);   // foot
+    g.add(cyl(0xFFFBE6,.045,.025,.38, s*.14,1.22,.54, .35,0,s*.25));
+    g.add(sphere(0xFFFBE6,.028,.028,.028, s*.18+s*.14,1.2-.02,.88));
   });
-  // pouch
-  addSphere(g, d.accent, .18,.14,.1, 0,.56,.25);
-  // baby in pouch
-  addSphere(g, d.color, .09,.1,.09, 0,.68,.3);
-  // tail
-  addCyl(g, d.color, .07,.04,.45, 0,.45,-.3, -.5);
+  eyes(g,c,1.46,.42,.14);
+  // Head dome bump
+  g.add(sphere(c,.22,.18,.18, 0,1.7,.1));
+  // Tail
+  g.add(cyl(c,.03,.02,.2, 0,.72,-.45, .5));
+  g.add(sphere(a,.06,.1,.06, 0,.62,-.6));
 }
 
-// ── WINNIE POOH ──
-function buildWinnie(g, d) {
-  addSphere(g, d.color, .38,.36,.34,  0,.5,0);             // chubby body
-  addSphere(g, d.accent, .36,.34,.32, 0,.52,0.02);         // red shirt overlay
-  addSphere(g, d.color, .28,.28,.26,  0,.98,.08);           // head
-  // round ears
-  [-1,1].forEach(s => addSphere(g, d.color, .12,.12,.1, s*.28,1.2,.04));
-  // snout
-  addSphere(g, 0xF5CBA7, .16,.12,.1, 0,.9,.28);
-  addSphere(g, 0x333333, .04,.04,.03, 0,.94,.38);           // nose
-  eyes(g, 1.0, .3, .1);
-  // arms
+function buildMonkey(g,c,a) {
+  [[-0.12,0,-0.1],[0.12,0,-0.1]].forEach(([x,,z])=>{
+    g.add(cyl(c,.07,.065,.34, x,.17,z));
+    g.add(sphere(0x1a0a00,.08,.06,.08, x,-.02,z));
+  });
+  // Body
+  g.add(sphere(c,.3,.34,.28, 0,.54,0));
+  // Belly patch
+  g.add(sphere(a,.2,.22,.14, 0,.56,.22));
+  // Arms
   [-1,1].forEach(s => {
-    addCyl(g, d.color, .07,.065,.3, s*.4,.66,0, 0, s*.7);
-    addSphere(g, d.color, .1,.09,.09, s*.58,.54,0);
+    g.add(cyl(c,.06,.055,.38, s*.34,.58,0, 0,0,s*.8));
+    g.add(sphere(c,.09,.08,.09, s*.58,.46,0)); // hand
+    // fingers
+    for(let f=0;f<4;f++) {
+      const fa=(f/3-.5)*.5;
+      g.add(cyl(c,.022,.018,.1, s*.58+Math.cos(fa)*.08,.38+Math.sin(fa)*.04,Math.sin(f*.5)*.05, .2));
+    }
   });
-  // legs
-  [-.14,.14].forEach(x => {
-    addCyl(g, d.color, .08,.075,.32, x,.2,0);
-    addSphere(g, d.color, .1,.08,.12, x,.04,.05);
+  // Neck
+  g.add(cyl(c,.11,.13,.14, 0,.88,.06));
+  // Head
+  g.add(sphere(c,.26,.26,.24, 0,1.1,.06));
+  // Face patch
+  g.add(sphere(a,.2,.18,.1, 0,1.08,.25));
+  // Big ears
+  [-1,1].forEach(s => {
+    g.add(sphere(c,.12,.12,.07, s*.3,1.1,.02));
+    g.add(sphere(a,.08,.08,.05, s*.3,1.1,.05));
   });
+  nostrils(g,a,1.04,.34,.05);
+  eyes(g,c,1.15,.3,.1);
+  // Brow ridge
+  g.add(sphere(0x5a3510,.26,.05,.1, 0,1.22,.24));
+  // Tail (curled)
+  for(let i=0;i<10;i++) {
+    const t=i/9;
+    const mesh=new THREE.Mesh(new THREE.SphereGeometry(.055-.008*t,8,8),m(c));
+    mesh.position.set(-.1-Math.sin(t*3)*.32,.44+t*.48,-.22-t*.06);
+    g.add(mesh);
+  }
+  // Tail tip
+  g.add(sphere(a,.07,.07,.07, -.1-Math.sin(3)*.32,.44+.48,-.28));
 }
 
-// ── DOG (Chase / Skye) ──
-function buildDog(g, d) {
-  addSphere(g, d.color, .32,.28,.28,  0,.46,0);             // body
-  addSphere(g, d.color, .24,.22,.22,  0,.88,.1);             // head
-  // snout
-  addSphere(g, d.id==='chase'?0xF5D5A0:0xF8C8C8, .13,.1,.1, 0,.82,.3);
-  addSphere(g, 0x222222, .04,.04,.03, 0,.86,.42);            // nose
-  // eyes
-  eyes(g, .92, .32, .09);
-  // floppy ears
-  [-1,1].forEach(s => addSphere(g, d.id==='skye'?d.accent:d.color, .1,.18,.06, s*.26,.78,-.05, 0, s*.2));
-  // collar
-  const collar = new THREE.Mesh(new THREE.TorusGeometry(.22,.04,8,16), mat(d.accent));
-  collar.rotation.x=Math.PI/2; collar.position.set(0,.72,.12); g.add(collar);
-  // badge
-  addCyl(g, 0xFFD700, .07,.07,.03, 0,.7,.34);
-  // legs
-  [-.14,.14].forEach(x => [-.1,.1].forEach(z => addCyl(g, d.color, .065,.06,.28, x,.18,z)));
-  // tail
-  addCyl(g, d.color, .04,.03,.22, 0,.58,-.3, -.7);
+function buildKangaroo(g,c,a) {
+  // Big hind legs
+  [-1,1].forEach(s => {
+    g.add(cyl(c,.1,.09,.52, s*.15,.28,0));         // upper
+    g.add(cyl(c,.08,.07,.4,  s*.14,.0,.18, .55));  // lower (forward)
+    g.add(sphere(0x1a0a00,.09,.06,.16, s*.14,-.2,.26)); // big foot
+  });
+  // Small front arms
+  [-1,1].forEach(s => g.add(cyl(c,.05,.045,.26, s*.28,.84,0, 0,0,s*.7)));
+  // Body (upright, large lower)
+  g.add(sphere(c,.32,.48,.28, 0,.72,0));
+  // Pouch
+  g.add(sphere(a,.2,.18,.12, 0,.62,.28));
+  // Baby in pouch (tiny head)
+  g.add(sphere(c,.1,.1,.1, 0,.76,.32));
+  g.add(sphere(c,.07,.07,.07, 0,.86,.34)); // baby head
+  eyes(g,0x3a2010,.89,.37,.03);
+  // Neck
+  g.add(cyl(c,.11,.13,.2, 0,1.08,.06));
+  // Head (long snout)
+  g.add(sphere(c,.22,.22,.2, 0,1.36,.06));
+  // Long muzzle
+  g.add(sphere(c,.14,.1,.22, 0,1.3,.28));
+  // Big ears
+  [-1,1].forEach(s => {
+    g.add(cyl(c,.05,.07,.3, s*.14,1.62,.02, 0,0,s*.1));
+    g.add(sphere(a,.04,.04,.04, s*.15,1.78,.02));
+  });
+  nostrils(g,a,1.28,.46,.05);
+  eyes(g,c,1.4,.28,.09);
+  // Heavy tail
+  g.add(cyl(c,.1,.07,.5, 0,.54,-.34, .55));
 }
 
-// ── ROUND FRUIT ──
-function buildRoundFruit(g, d) {
-  addSphere(g, d.color, .44,.44,.44,  0,.55,0);
-  addCyl(g, 0x3B7A1A, .03,.025,.2,  0,1.0,0);              // stem
-  addSphere(g, 0x3B7A1A, .12,.18,.06, .1,1.05,0, 0,-.4);   // leaf
-  if (d.id==='tomato') {
-    // extra leaves on top
-    for(let i=0;i<5;i++){
-      const a=i/5*Math.PI*2;
-      addSphere(g,0x2A6B10,.1,.06,.03, Math.cos(a)*.12,.98,Math.sin(a)*.12, 0, a);
+function buildWinnie(g,c,a) {
+  [[-0.15,0,-0.1],[0.15,0,-0.1],[-0.14,0,0.1],[0.14,0,0.1]].forEach(([x,,z])=>{
+    g.add(cyl(c,.08,.075,.3, x,.15,z));
+    g.add(sphere(c,.1,.07,.1, x,.0,z));
+  });
+  // Chubby body
+  g.add(sphere(c,.4,.42,.38, 0,.56,0));
+  // Red crop shirt
+  g.add(sphere(a,.38,.28,.36, 0,.6,.02));
+  // Arms (chunky)
+  [-1,1].forEach(s => {
+    g.add(sphere(c,.1,.1,.1, s*.46,.66,.04));
+    g.add(cyl(c,.085,.08,.3, s*.34,.68,.04, 0,0,s*.75));
+  });
+  // Neck
+  g.add(cyl(c,.14,.16,.12, 0,.98,.04));
+  // Big round head
+  g.add(sphere(c,.32,.32,.3, 0,1.24,.06));
+  // Muzzle
+  g.add(sphere(0xF5CBA7,.22,.16,.12, 0,1.18,.3));
+  // Nose
+  g.add(sphere(0x2a1010,.065,.05,.05, 0,1.26,.42));
+  // Round ears
+  [-1,1].forEach(s => {
+    g.add(sphere(c,.14,.14,.1, s*.3,1.5,.03));
+    g.add(sphere(a,.09,.09,.06, s*.3,1.5,.07)); // inner ear
+  });
+  eyes(g,c,1.3,.36,.13);
+  // Honey pot in hand
+  g.add(cyl(0xE8C84A,.09,.08,.18, .52,.54,.08));
+  g.add(sphere(0xE8C84A,.1,.06,.1, .52,.65,.08));
+  g.add(cyl(0xE8C84A,.05,.09,.06, .52,.45,.08));
+}
+
+function buildDog(g,c,a,type) {
+  [[-0.12,0,-0.09],[0.12,0,-0.09],[-0.11,0,0.09],[0.11,0,0.09]].forEach(([x,,z])=>{
+    g.add(cyl(c,.065,.06,.28, x,.14,z));
+    g.add(sphere(0x1a0a00,.075,.055,.075, x,-.02,z));
+  });
+  // Body
+  g.add(sphere(c,.3,.28,.26, 0,.46,0));
+  // Arms/front legs with paws
+  [-1,1].forEach(s => {
+    g.add(cyl(c,.06,.055,.24, s*.28,.52,0, 0,0,s*.6));
+    g.add(sphere(c,.08,.07,.08, s*.44,.44,.04));
+  });
+  // Neck
+  g.add(cyl(c,.12,.14,.16, 0,.76,.06));
+  // Collar
+  g.add(torus(a,.18,.045,10,16, 0,.74,.08, Math.PI/2));
+  // Badge
+  g.add(cyl(0xFFD700,.065,.065,.03, 0,.72,.26));
+  // Head
+  g.add(sphere(c,.26,.24,.24, 0,1.0,.08));
+  // Muzzle
+  const muzzleC = type==='chase'?0xF5D5A0:0xF8C8C8;
+  g.add(sphere(muzzleC,.16,.11,.12, 0,.96,.3));
+  g.add(sphere(0x222222,.045,.04,.04, 0,1.0,.42)); // nose
+  // Ears (floppy)
+  if(type==='chase') {
+    [-1,1].forEach(s => g.add(sphere(c,.1,.2,.07, s*.26,.96,-.06, 0,0,s*.3)));
+  } else {
+    // Skye — pointed ears
+    [-1,1].forEach(s => {
+      g.add(cone(a,.09,.28, s*.24,1.2,.04, 0,0,s*.2));
+      g.add(cone(muzzleC,.06,.2, s*.24,1.2,.06, 0,0,s*.2));
+    });
+  }
+  eyes(g,c,1.04,.3,.1);
+  // Eyebrows
+  [-1,1].forEach(s => g.add(sphere(a,.07,.025,.02, s*.1,1.1,.3)));
+  // Tail (wagging)
+  g.add(cyl(c,.04,.03,.24, 0,.54,-.28, -.65));
+  g.add(sphere(c,.055,.055,.055, 0,.42,-.46));
+  // PAW PATROL backpack hint
+  if(type==='chase') g.add(box(0x1155cc,.18,.16,.1, 0,.52,-.22));
+  if(type==='skye')  g.add(box(0xff44aa,.16,.14,.1, 0,.52,-.22));
+}
+
+function buildRoundFruit(g,c,a,isTomato=false, isOrange=false) {
+  // Main sphere
+  g.add(sphere(c,.46,.46,.46, 0,.52,0));
+  if(isOrange) {
+    // Orange peel bumps
+    for(let i=0;i<20;i++) {
+      const ang=Math.random()*Math.PI*2, b=Math.random()*Math.PI-.5;
+      g.add(sphere(c,.04,.04,.03, Math.cos(b)*Math.cos(ang)*.46,
+        .52+Math.cos(b)*Math.sin(ang)*.46, Math.sin(b)*.46));
+    }
+    // Navel
+    g.add(sphere(0x8B4513,.06,.04,.06, 0,.07,0));
+  }
+  if(isTomato) {
+    // Tomato crown
+    for(let i=0;i<5;i++) {
+      const a2=i/5*Math.PI*2;
+      g.add(sphere(0x2a6b10,.1,.06,.03, Math.cos(a2)*.14,.99,Math.sin(a2)*.14));
+    }
+    // Ribbing
+    for(let i=0;i<5;i++) {
+      const a2=i/5*Math.PI*2;
+      g.add(cyl(0xCC2e00,.01,.01,.7, Math.cos(a2)*.44,.52,Math.sin(a2)*.44, 0,0,a2+Math.PI/2));
     }
   }
+  // Stem
+  g.add(cyl(0x3B7A1A,.03,.025,.22, 0,.99,0));
+  // Leaf
+  g.add(sphere(0x2d8a1a,.14,.2,.06, .12,1.05,0, 0,0,-.45));
+  g.add(sphere(0x2d8a1a,.12,.18,.05, -.1,1.03,0, 0,0,.4));
 }
 
-// ── CUCUMBER ──
-function buildCucumber(g, d) {
-  addCyl(g, d.color, .14,.12,.82, 0,.55,0, 0,0,12);
-  // bumps
-  for(let i=0;i<10;i++){
-    const a=Math.random()*Math.PI*2, y=.2+Math.random()*.7;
-    addSphere(g, d.accent, .04,.04,.04, Math.cos(a)*.15,y,Math.sin(a)*.15);
+function buildCucumber(g,c,a) {
+  // Main body
+  g.add(cyl(c,.17,.14,.85, 0,.48,0));
+  // Rounded ends
+  g.add(sphere(c,.17,.13,.17, 0,.91,0));
+  g.add(sphere(a,.15,.11,.15, 0,.07,0));
+  // Surface bumps in lines
+  for(let row=0;row<4;row++) {
+    const ang0 = row/4*Math.PI*2;
+    for(let j=0;j<6;j++) {
+      const yy=.18+j*.12;
+      g.add(sphere(a,.035,.028,.028, Math.cos(ang0)*.17,yy,Math.sin(ang0)*.17));
+    }
   }
-  // ends
-  addSphere(g, d.accent, .14,.06,.14, 0,1.0,0);
-  addSphere(g, d.accent, .12,.05,.12, 0,.1,0);
-  g.rotation.z = .25;  // lying slightly tilted
-}
-
-// ── BANANA ──
-function buildBanana(g, d) {
-  for(let i=0;i<10;i++){
-    const t=i/9;
-    const m=new THREE.Mesh(new THREE.SphereGeometry(.11-t*.02,10,8), mat(d.color));
-    m.position.set(Math.sin(t*1.3)*.38, t*.75+.1, 0);
-    m.scale.y=.7;
-    g.add(m);
+  // Tiny flower end
+  for(let i=0;i<6;i++) {
+    const a2=i/6*Math.PI*2;
+    g.add(sphere(0xd4a830,.025,.02,.02, Math.cos(a2)*.06,.06,Math.sin(a2)*.06));
   }
-  // tip
-  addSphere(g, d.accent, .07,.07,.07, .46,.7,0);
-  addCone(g, d.accent, .05,.1, .02,.84,0, 0,0);
-  g.position.y=0; g.rotation.z=-.2;
+  g.rotation.z = .22;
 }
 
-// ═══════════════════════════════════════════════════════════
-// FLOATING LABEL (canvas sprite)
-// ═══════════════════════════════════════════════════════════
-function makeLabel(text) {
-  const c=document.createElement('canvas');
-  c.width=280; c.height=72;
-  const ctx=c.getContext('2d');
-  ctx.fillStyle='rgba(0,0,0,.7)';
-  ctx.beginPath();ctx.roundRect(4,4,272,64,16);ctx.fill();
-  ctx.fillStyle='#fff';
-  ctx.font='bold 34px Fredoka One,sans-serif';
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(text,140,38);
-  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true}));
-  sp.scale.set(1.6,.46,1);
-  return sp;
+function buildBanana(g,c,a) {
+  // Curved segments
+  const segs = 14;
+  for(let i=0;i<segs;i++) {
+    const t=i/(segs-1);
+    const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,12,10), m(i===0||i===segs-1?a:c));
+    const rx=Math.sin(t*1.35)*.42, ry=t*.82+.08;
+    mesh.scale.set(.13-.02*t, .16-.02*t, .13-.02*t);
+    mesh.position.set(rx,ry,0);
+    g.add(mesh);
+    // Ridge line (3 ridges of a banana)
+    if(i>0&&i<segs-1) {
+      for(let r=0;r<3;r++) {
+        const ra=r/3*Math.PI*2;
+        const rm=new THREE.Mesh(new THREE.SphereGeometry(.025,6,6),m(a));
+        rm.position.set(rx+Math.cos(ra)*.13,ry,Math.sin(ra)*.12);
+        g.add(rm);
+      }
+    }
+  }
+  // Stem
+  g.add(cyl(0x5a3510,.025,.025,.12, 0,.02,0));
+  g.rotation.z = -.22;
 }
 
-// ═══════════════════════════════════════════════════════════
-// CAMERA ORIENTATION
-// ═══════════════════════════════════════════════════════════
-const quat = new THREE.Quaternion();
+// ═══════════════════════════════════════════════════════
+// ORIENTATION
+// ═══════════════════════════════════════════════════════
+let yaw=0, pitch=0, hasGyro=false;
+let gyroA=0, gyroB=90, gyroG=0;
+let tx=0, ty=0;
 const euler = new THREE.Euler(0,0,0,'YXZ');
-const EYE_IPD = 0.032; // half interpupillary distance in metres
 
-function applyCameraOrientation(cam) {
-  if (hasGyro) {
+window.addEventListener('deviceorientation', e => {
+  if(e.alpha!=null){ gyroA=e.alpha||0; gyroB=e.beta||90; gyroG=e.gamma||0; hasGyro=true; }
+});
+document.addEventListener('touchstart', e => {
+  if(e.target.tagName==='BUTTON') return;
+  tx=e.touches[0].clientX; ty=e.touches[0].clientY;
+},{passive:true});
+document.addEventListener('touchmove', e => {
+  if(hasGyro) return;
+  yaw  -= (e.touches[0].clientX-tx)*.004;
+  pitch -= (e.touches[0].clientY-ty)*.003;
+  pitch=Math.max(-1.1,Math.min(1.1,pitch));
+  tx=e.touches[0].clientX; ty=e.touches[0].clientY;
+},{passive:true});
+// Mouse fallback
+let md=false,mx=0,my=0;
+document.addEventListener('mousedown',e=>{md=true;mx=e.clientX;my=e.clientY;});
+document.addEventListener('mouseup',()=>md=false);
+document.addEventListener('mousemove',e=>{
+  if(!md)return;
+  yaw-=(e.clientX-mx)*.004; pitch-=(e.clientY-my)*.003;
+  pitch=Math.max(-1.1,Math.min(1.1,pitch));
+  mx=e.clientX;my=e.clientY;
+});
+
+function applyCamOrientation(cam) {
+  if(hasGyro) {
     euler.set(
-      THREE.MathUtils.degToRad(gyroBeta  - 90),
-     -THREE.MathUtils.degToRad(gyroAlpha),
-     -THREE.MathUtils.degToRad(gyroGamma),
+      THREE.MathUtils.degToRad(gyroB-90),
+     -THREE.MathUtils.degToRad(gyroA),
+     -THREE.MathUtils.degToRad(gyroG),
       'YXZ'
     );
   } else {
-    euler.set(pitch, yaw, 0, 'YXZ');
+    euler.set(pitch,yaw,0,'YXZ');
   }
   cam.quaternion.setFromEuler(euler);
 }
 
-// ═══════════════════════════════════════════════════════════
-// FIND NEAREST VISIBLE OBJECT
-// ═══════════════════════════════════════════════════════════
-const camDir = new THREE.Vector3();
-const toObj  = new THREE.Vector3();
+// ═══════════════════════════════════════════════════════
+// PROXIMITY / REVEAL LOGIC
+// ═══════════════════════════════════════════════════════
+const REVEAL_DIST  = 4.0;  // metres — creature pops when you're this close
+const CATCH_DIST   = 3.2;
 
-function findNearest() {
-  camL.getWorldDirection(camDir);
-  let bestDot = 0.4, best = null;
-  objects3d.forEach(o => {
-    if (found.has(o.userData.id) || !o.visible) return;
-    toObj.subVectors(o.position, camL.position);
-    const dist = toObj.length();
-    if (dist > 10) return;
-    toObj.normalize();
-    const dot = camDir.dot(toObj);
-    const s = dot - dist * 0.04;
-    if (s > bestDot) { bestDot = s; best = o; }
+const camDir  = new THREE.Vector3();
+const toZone  = new THREE.Vector3();
+
+function checkProximity() {
+  const px=camL.position.x, pz=camL.position.z;
+  let closest=null, closestD=99;
+
+  ZONES.forEach(zone => {
+    if(found.has(zone.def.id)) return;
+    const dx=zone.x-px, dz=zone.z-pz;
+    const d=Math.sqrt(dx*dx+dz*dz);
+
+    // Reveal: scale up smoothly
+    if(d < REVEAL_DIST) {
+      if(!zone.revealed) {
+        zone.revealed=true;
+        triggerRevealAnim(zone);
+      }
+    }
+
+    // Scale up proportionally while approaching
+    if(zone.revealed && zone.mesh) {
+      const t = Math.max(0, Math.min(1, (REVEAL_DIST-d)/REVEAL_DIST));
+      const s = easeOut(t);
+      zone.mesh.scale.set(s,s,s);
+    }
+
+    if(d < closestD) { closestD=d; closest=zone; }
   });
-  nearObj = best;
-  const btn = document.getElementById('catchBtn');
-  const hint = document.getElementById('hint-text');
 
-  if (best) {
-    const d = camL.position.distanceTo(best.position);
-    btn.style.display = d < 3.0 ? 'block' : 'none';
-    hint.textContent = `🎯 ${best.userData.name} is in the ${best.userData.room}!`;
-  } else {
-    btn.style.display = 'none';
-    const rem = DEFS.filter(d => !found.has(d.id));
-    if (rem.length) {
-      const pick = rem[Math.floor(Date.now()/4000) % rem.length];
-      hint.textContent = `🔍 Find the ${pick.name} in the ${pick.room}!`;
+  // Nearest in view direction
+  camL.getWorldDirection(camDir);
+  let bestScore=-1, bestInView=null;
+  ZONES.forEach(zone => {
+    if(found.has(zone.def.id)||!zone.revealed) return;
+    toZone.set(zone.x-camL.position.x, 0, zone.z-camL.position.z);
+    const d=toZone.length(); if(d>8)return;
+    toZone.normalize();
+    const camDirFlat=new THREE.Vector3(camDir.x,0,camDir.z).normalize();
+    const dot=camDirFlat.dot(toZone);
+    const sc=dot-d*.04;
+    if(sc>bestScore){ bestScore=sc; bestInView=zone; }
+  });
+
+  nearZone=bestInView&&bestScore>0.4?bestInView:null;
+  const catchBtn=document.getElementById('catchBtn');
+  const ring=document.getElementById('revealRing');
+  const hint=document.getElementById('hint-text');
+
+  if(nearZone) {
+    const d=Math.sqrt((nearZone.x-px)**2+(nearZone.z-pz)**2);
+    if(d<CATCH_DIST && nearZone.revealed) {
+      catchBtn.style.display='block';
+      hint.textContent=`🎯 ${nearZone.def.name} is right here!`;
+      ring.classList.add('active');
     } else {
-      hint.textContent = '✅ All found!';
+      catchBtn.style.display='none';
+      hint.textContent=`👀 ${nearZone.def.name} — ${nearZone.def.room}!`;
+      ring.classList.remove('active');
+    }
+  } else {
+    catchBtn.style.display='none';
+    ring.classList.remove('active');
+    const notFound=ZONES.filter(z=>!found.has(z.def.id)&&!z.revealed);
+    if(notFound.length>0) {
+      const pick=notFound[Math.floor(Date.now()/4500)%notFound.length];
+      hint.textContent=`🔍 Walk to find the ${pick.def.name} (${pick.def.room})`;
+    } else {
+      const revealed=ZONES.filter(z=>!found.has(z.def.id)&&z.revealed);
+      if(revealed.length>0)
+        hint.textContent=`👉 Walk closer to the ${revealed[0].def.name}!`;
+      else hint.textContent=`✅ All found! Amazing!`;
     }
   }
 }
 
-// ═══════════════════════════════════════════════════════════
+function easeOut(t) { return 1-Math.pow(1-t,3); }
+
+function triggerRevealAnim(zone) {
+  // Particle burst from position (simple: just a scale bounce)
+  let frame2=0;
+  const iv=setInterval(()=>{
+    frame2++;
+    if(frame2<8) {
+      const s=1.2+Math.sin(frame2*.8)*.3;
+      zone.mesh.scale.set(s,s,s);
+    } else clearInterval(iv);
+  },40);
+}
+
+// ═══════════════════════════════════════════════════════
 // CATCH
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function catchIt() {
-  if (!nearObj || found.has(nearObj.userData.id)) return;
-  const def = nearObj.userData;
+  if(!nearZone||found.has(nearZone.def.id)) return;
+  const def=nearZone.def;
   found.add(def.id);
-  score += def.pts;
-  document.getElementById('scoreVal').textContent = score;
+  score+=def.pts;
+  document.getElementById('scoreVal').textContent=score;
 
-  // Pop animation
-  const obj = nearObj;
+  const obj=nearZone.mesh;
   let t=0;
-  const iv = setInterval(() => {
-    t += 0.06;
-    const s = 1 + t * .6;
-    obj.scale.set(s,s,s);
-    if (t >= 1) {
-      clearInterval(iv);
-      obj.visible = false;
-      if(obj.userData.label) obj.userData.label.visible = false;
-    }
-  }, 20);
+  const iv=setInterval(()=>{
+    t+=.07;
+    const s=1+t*.7; obj.scale.set(s,s,s);
+    if(t>=1){ clearInterval(iv); obj.visible=false; }
+  },22);
 
-  // Update found box
-  const emojis = [...found].map(id => DEFS.find(d=>d.id===id)?.emoji).join('');
-  document.getElementById('found-box').textContent =
-    emojis + '  ' + (DEFS.length - found.size) + ' left';
+  const emojis=[...found].map(id=>DEFS.find(d=>d.id===id)?.emoji).join('');
+  document.getElementById('found-box').textContent=emojis+'  '+(DEFS.length-found.size)+' left';
 
-  // Show popup
-  document.getElementById('popup-emoji').textContent = def.emoji;
-  document.getElementById('popup-name').textContent  = def.name + '!';
-  document.getElementById('popup-msg').textContent =
-    `Found in the ${def.room}! +${def.pts} ⭐`;
-  document.getElementById('popup').style.display = 'flex';
-  document.getElementById('catchBtn').style.display = 'none';
+  document.getElementById('popup-emoji').textContent=def.emoji;
+  document.getElementById('popup-name').textContent=def.name+'!';
+  document.getElementById('popup-msg').textContent=`Found in the ${def.room}! +${def.pts} ⭐`;
+  document.getElementById('popup').style.display='flex';
+  document.getElementById('catchBtn').style.display='none';
+  document.getElementById('revealRing').classList.remove('active');
 
-  if (found.size >= DEFS.length) setTimeout(showWin, 1600);
+  if(found.size>=DEFS.length) setTimeout(showWin,1600);
 }
 
-function closePopup() { document.getElementById('popup').style.display = 'none'; }
-
-function showWin() {
+function closePopup(){ document.getElementById('popup').style.display='none'; }
+function showWin(){
   closePopup();
-  document.getElementById('win-msg').textContent =
-    `All ${DEFS.length} creatures found! Total: ${score} ⭐`;
-  document.getElementById('win').style.display = 'flex';
+  document.getElementById('win-msg').textContent=`All ${DEFS.length} found! Total: ${score} ⭐`;
+  document.getElementById('win').style.display='flex';
+}
+function resetGame(){
+  found.clear(); score=0;
+  document.getElementById('scoreVal').textContent='0';
+  document.getElementById('found-box').textContent='0 / 12 found';
+  document.getElementById('win').style.display='none';
+  ZONES.forEach(z=>{ z.revealed=false; if(z.mesh){z.mesh.visible=true;z.mesh.scale.set(0,0,0);} });
 }
 
-function resetGame() {
-  found.clear(); score = 0;
-  document.getElementById('scoreVal').textContent = '0';
-  document.getElementById('found-box').textContent = '🔍 Look around!';
-  document.getElementById('win').style.display = 'none';
-  objects3d.forEach(o => {
-    o.visible = true; o.scale.set(1,1,1);
-    if(o.userData.label) o.userData.label.visible = true;
-  });
-}
-
-// ═══════════════════════════════════════════════════════════
-// VR TOGGLE
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// VR
+// ═══════════════════════════════════════════════════════
 function toggleVR() {
-  vrMode = !vrMode;
-  document.body.classList.toggle('vr-mode', vrMode);
-  document.getElementById('vrBtn').textContent = vrMode ? '📱 Normal' : '📦 Cardboard';
-
-  if (vrMode) {
-    // Mirror the same stream to right panel video
-    const stream = document.getElementById('videoBg').srcObject;
-    if (stream) {
-      document.getElementById('vrVidL').srcObject = stream;
-      document.getElementById('vrVidR').srcObject = stream;
-    }
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  } else {
-    renderer.setSize(window.innerWidth, window.innerHeight);
+  vrMode=!vrMode;
+  document.body.classList.toggle('vr-mode',vrMode);
+  document.getElementById('vrBtn').textContent=vrMode?'📱 Normal':'📦 Cardboard';
+  const stream=document.getElementById('videoBg').srcObject;
+  if(vrMode&&stream){
+    document.getElementById('vrVidL').srcObject=stream;
+    document.getElementById('vrVidR').srcObject=stream;
   }
   onResize();
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// SIMULATE WALKING (phone movement = player movement)
+// ═══════════════════════════════════════════════════════
+// Since we can't get GPS indoors, we simulate movement:
+// player auto-walks slowly in the direction they're looking.
+// They control speed by tapping/holding the screen (not a button).
+let autoWalk = false;
+let walkSpeed = 0;
+document.addEventListener('touchstart', e => {
+  if(e.target.tagName==='BUTTON') return;
+  walkSpeed = 0.018;
+},{passive:true});
+document.addEventListener('touchend', () => { walkSpeed=0; },{passive:true});
+// Mouse hold
+document.addEventListener('mousedown', e => { if(e.target.tagName!=='BUTTON') walkSpeed=0.018; });
+document.addEventListener('mouseup', () => walkSpeed=0);
+
+// ═══════════════════════════════════════════════════════
 // ANIMATE
-// ═══════════════════════════════════════════════════════════
-let frame = 0;
-function animate() {
+// ═══════════════════════════════════════════════════════
+let frame=0;
+function animate(){
   requestAnimationFrame(animate);
   frame++;
 
-  // Bob and slow spin
-  objects3d.forEach((o,i) => {
-    if (!o.visible) return;
-    o.position.y = Math.sin(frame * 0.025 + i * 1.1) * 0.07;
-    o.rotation.y += 0.008;
+  // Move player forward if holding screen
+  if(walkSpeed>0) {
+    const fwd=new THREE.Vector3(0,0,-1).applyQuaternion(camL.quaternion);
+    fwd.y=0; fwd.normalize();
+    camL.position.addScaledVector(fwd, walkSpeed);
+    camR.position.copy(camL.position);
+  }
+
+  // Gentle idle bob on creatures
+  ZONES.forEach((zone,i)=>{
+    if(!zone.mesh||!zone.revealed) return;
+    const base=zone.y;
+    zone.mesh.position.y=base+Math.sin(frame*.028+i*1.1)*.05;
+    zone.mesh.rotation.y+=.006;
   });
 
-  applyCameraOrientation(camL);
-  if (frame % 8 === 0) findNearest();
+  applyCamOrientation(camL);
+  if(frame%6===0) checkProximity();
 
   renderer.clear();
-
-  if (vrMode) {
-    const W = window.innerWidth, H = window.innerHeight;
-    // Left eye
-    camR.position.copy(camL.position).addScaledVector(
-      new THREE.Vector3().setFromMatrixColumn(camL.matrixWorld, 0), -EYE_IPD);
-    camL.position.set(0,1.5,0);
-    camL.aspect = (W/2) / H;
-    camL.updateProjectionMatrix();
-    renderer.setViewport(0, 0, W/2, H);
-    renderer.setScissor(0, 0, W/2, H);
-    renderer.setScissorTest(true);
-    renderer.render(scene, camL);
-
-    // Right eye (slight offset)
+  if(vrMode){
+    const W=window.innerWidth, H=window.innerHeight;
+    camL.aspect=(W/2)/H; camL.updateProjectionMatrix();
+    renderer.setViewport(0,0,W/2,H); renderer.setScissor(0,0,W/2,H);
+    renderer.setScissorTest(true); renderer.render(scene,camL);
     camR.quaternion.copy(camL.quaternion);
-    camR.position.set(EYE_IPD*2, 1.5, 0);
-    camR.aspect = (W/2) / H;
-    camR.updateProjectionMatrix();
-    renderer.setViewport(W/2, 0, W/2, H);
-    renderer.setScissor(W/2, 0, W/2, H);
-    renderer.render(scene, camR);
-
+    camR.position.set(camL.position.x+.032,camL.position.y,camL.position.z);
+    camR.aspect=(W/2)/H; camR.updateProjectionMatrix();
+    renderer.setViewport(W/2,0,W/2,H); renderer.setScissor(W/2,0,W/2,H);
+    renderer.render(scene,camR);
     renderer.setScissorTest(false);
   } else {
-    camL.position.set(0, 1.5, 0);
-    camL.aspect = window.innerWidth / window.innerHeight;
-    camL.updateProjectionMatrix();
-    renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
-    renderer.render(scene, camL);
+    camL.aspect=window.innerWidth/window.innerHeight; camL.updateProjectionMatrix();
+    renderer.setViewport(0,0,window.innerWidth,window.innerHeight);
+    renderer.render(scene,camL);
   }
 }
 
-function onResize() {
-  const W = window.innerWidth, H = window.innerHeight;
-  renderer.setSize(W, H);
-  if (!vrMode) {
-    camL.aspect = W/H;
-    camL.updateProjectionMatrix();
-  }
+function onResize(){
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  camL.aspect=window.innerWidth/window.innerHeight; camL.updateProjectionMatrix();
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // START
-// ═══════════════════════════════════════════════════════════
-async function startGame() {
-  document.getElementById('loading').style.display = 'none';
-
-  // ── Camera stream ──
+// ═══════════════════════════════════════════════════════
+async function startGame(){
+  document.getElementById('loading').style.display='none';
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: {ideal:1280}, height: {ideal:720} },
-      audio: false
+    const stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:false
     });
-    const vid = document.getElementById('videoBg');
-    vid.srcObject = stream;
-    await vid.play().catch(()=>{});
-  } catch(e) {
-    console.warn('Camera not available:', e);
-    document.getElementById('noCamBg').style.display = 'block';
+    document.getElementById('videoBg').srcObject=stream;
+    await document.getElementById('videoBg').play().catch(()=>{});
+  } catch(e){
+    document.getElementById('noCamBg').style.display='block';
   }
-
-  // ── iOS gyro permission ──
-  if (typeof DeviceOrientationEvent !== 'undefined' &&
-      typeof DeviceOrientationEvent.requestPermission === 'function') {
-    try { await DeviceOrientationEvent.requestPermission(); } catch(e) {}
+  if(typeof DeviceOrientationEvent!=='undefined'&&
+     typeof DeviceOrientationEvent.requestPermission==='function'){
+    try{ await DeviceOrientationEvent.requestPermission(); }catch(e){}
   }
-
   initThree();
-
-  // Show drag hint if no gyro after 2s
-  setTimeout(() => {
-    if (!hasGyro) {
-      document.getElementById('hint-text').textContent =
-        '↔ Drag screen to look around!';
-    }
-  }, 2000);
+  setTimeout(()=>{
+    if(!hasGyro)
+      document.getElementById('hint-text').textContent='👆 Hold screen & drag to look around!';
+  },2200);
 }
 </script>
 </body>
