@@ -7,131 +7,86 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#000; overflow:hidden; font-family:'David Libre','Frank Ruhl Libre',serif; touch-action:none; }
-
-#videoBg {
-  position:fixed; inset:0; width:100%; height:100%;
-  object-fit:cover; z-index:0;
-}
-#noCamBg {
-  position:fixed; inset:0; z-index:0; display:none;
-  background:linear-gradient(160deg,#0f2027,#203a43,#2c5364);
-}
-#gameCanvas {
-  position:fixed; inset:0; width:100%; height:100%;
-  z-index:1; background:transparent;
-}
+#videoBg { position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+#noCamBg { position:fixed; inset:0; z-index:0; display:none; background:linear-gradient(160deg,#0f2027,#203a43,#2c5364); }
+#gameCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:1; background:transparent; }
 
 /* VR */
 body.vr #videoBg { display:none; }
-#vrL,#vrR {
-  display:none; position:fixed; top:0; width:50%; height:100%; overflow:hidden; z-index:0;
-}
-#vrL { left:0; } #vrR { right:0; }
-#vrL video, #vrR video { width:200%; height:100%; object-fit:cover; }
-#vrR video { margin-left:-100%; }
-body.vr #vrL, body.vr #vrR { display:block; }
-#vrLine { display:none; position:fixed; left:50%; top:0; bottom:0; width:4px; background:#000; z-index:9; transform:translateX(-50%); }
-body.vr #vrLine { display:block; }
+#vrL,#vrR { display:none; position:fixed; top:0; width:50%; height:100%; overflow:hidden; z-index:0; }
+#vrL{left:0;} #vrR{right:0;}
+#vrL video,#vrR video{width:200%;height:100%;object-fit:cover;}
+#vrR video{margin-left:-100%;}
+body.vr #vrL,body.vr #vrR{display:block;}
+#vrLine{display:none;position:fixed;left:50%;top:0;bottom:0;width:4px;background:#000;z-index:9;transform:translateX(-50%);}
+body.vr #vrLine{display:block;}
 
 /* LOADING */
 #loading {
-  position:fixed; inset:0;
-  background:linear-gradient(135deg,#0d1b2a,#1b2a3a);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  z-index:200; color:#fff; text-align:center; padding:2rem;
+  position:fixed;inset:0;background:linear-gradient(135deg,#0d1b2a,#1b2a3a);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:200;color:#fff;text-align:center;padding:2rem;
 }
-#loading .emojis { font-size:3.5rem; margin-bottom:.8rem; animation:hop 1.3s infinite; }
-@keyframes hop { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-#loading h1 { font-size:2.8rem; color:#ffd54f; margin-bottom:.5rem; }
-#loading p  { font-size:1.1rem; color:#aad4f5; line-height:1.7; max-width:300px; margin:.3rem auto; }
-#startBtn {
-  margin-top:1.5rem;
-  background:linear-gradient(135deg,#f9a825,#e65100);
-  border:none; border-radius:50px; padding:1rem 2.8rem;
-  font-size:1.5rem; font-family:inherit;
-  color:#fff; cursor:pointer; animation:pulse 2s infinite;
+#loading .emojis{font-size:4rem;margin-bottom:.8rem;animation:hop 1.3s infinite;}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+#loading h1{font-size:3rem;color:#ffd54f;margin-bottom:.5rem;}
+#loading p{font-size:1.1rem;color:#aad4f5;line-height:1.7;max-width:300px;margin:.3rem auto;}
+#startBtn{
+  margin-top:1.5rem;background:linear-gradient(135deg,#f9a825,#e65100);
+  border:none;border-radius:50px;padding:1rem 2.8rem;
+  font-size:1.5rem;font-family:inherit;color:#fff;cursor:pointer;animation:pulse 2s infinite;
 }
-@keyframes pulse {
+@keyframes pulse{
   0%,100%{transform:scale(1);box-shadow:0 4px 20px rgba(249,168,37,.5)}
   50%{transform:scale(1.06);box-shadow:0 4px 32px rgba(249,168,37,.9)}
 }
 
 /* HUD */
-#hud {
-  position:fixed; top:0; left:0; right:0; z-index:10;
-  padding:.8rem 1rem; display:flex; justify-content:space-between; align-items:flex-start;
-  pointer-events:none;
-}
-.pill {
-  background:rgba(0,0,0,.65); border-radius:20px; padding:.4rem 1rem;
-  color:#fff; font-size:1.1rem; border:1.5px solid rgba(255,220,0,.5);
-  backdrop-filter:blur(8px);
-}
+#hud{position:fixed;top:0;left:0;right:0;z-index:10;padding:.8rem 1rem;
+  display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;}
+.pill{background:rgba(0,0,0,.65);border-radius:20px;padding:.4rem 1rem;
+  color:#fff;font-size:1.1rem;border:1.5px solid rgba(255,220,0,.5);backdrop-filter:blur(8px);}
 
 /* BOTTOM BAR */
-#bar {
-  position:fixed; bottom:0; left:0; right:0; z-index:10;
-  padding:.7rem 1rem 1.1rem;
-  display:flex; align-items:center; justify-content:space-between; gap:.5rem;
-  background:rgba(0,0,0,.52); backdrop-filter:blur(10px);
-  border-top:1px solid rgba(255,255,255,.1);
-}
-#hint {
-  flex:1; color:#fff; font-size:1rem; text-align:center; line-height:1.4; padding:0 .3rem;
-}
-#catchBtn {
+#bar{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:.7rem 1rem 1.1rem;
+  display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+  background:rgba(0,0,0,.52);backdrop-filter:blur(10px);
+  border-top:1px solid rgba(255,255,255,.1);}
+#hint{flex:1;color:#fff;font-size:1rem;text-align:center;line-height:1.4;padding:0 .3rem;}
+#catchBtn{
   background:linear-gradient(135deg,#43a047,#1b5e20);
-  border:none; border-radius:50px; padding:.7rem 1.3rem;
-  font-size:1.1rem; font-family:inherit;
-  color:#fff; cursor:pointer; white-space:nowrap;
-  box-shadow:0 3px 16px rgba(67,160,71,.55); display:none; pointer-events:all;
+  border:none;border-radius:50px;padding:.7rem 1.3rem;
+  font-size:1.1rem;font-family:inherit;color:#fff;cursor:pointer;white-space:nowrap;
+  box-shadow:0 3px 16px rgba(67,160,71,.55);display:none;pointer-events:all;
   animation:glow .9s infinite alternate;
 }
-@keyframes glow { from{box-shadow:0 3px 14px rgba(67,160,71,.5)} to{box-shadow:0 3px 28px rgba(67,160,71,.95)} }
-#vrBtn {
-  background:rgba(255,255,255,.12); border:1.5px solid rgba(255,255,255,.3);
-  border-radius:50px; padding:.5rem .9rem;
-  font-size:.95rem; font-family:inherit;
-  color:#fff; cursor:pointer; white-space:nowrap; pointer-events:all; flex-shrink:0;
+@keyframes glow{from{box-shadow:0 3px 14px rgba(67,160,71,.5)}to{box-shadow:0 3px 28px rgba(67,160,71,.95)}}
+#vrBtn{
+  background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);
+  border-radius:50px;padding:.5rem .9rem;font-size:.95rem;font-family:inherit;
+  color:#fff;cursor:pointer;white-space:nowrap;pointer-events:all;flex-shrink:0;
 }
 
 /* POPUP */
-#popup {
-  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-  z-index:50; background:rgba(0,0,0,.6);
-}
-#popBox {
+#popup{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:50;background:rgba(0,0,0,.6);}
+#popBox{
   background:linear-gradient(135deg,#1a237e,#283593);
-  border-radius:24px; padding:2rem 1.5rem; text-align:center; color:#fff;
-  border:3px solid rgba(255,200,0,.7); max-width:300px; width:88vw;
+  border-radius:24px;padding:2rem 1.5rem;text-align:center;color:#fff;
+  border:3px solid rgba(255,200,0,.7);max-width:300px;width:88vw;
   animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);
 }
-@keyframes popIn { from{transform:scale(.4);opacity:0} to{transform:scale(1);opacity:1} }
-#popEmoji { font-size:5rem; }
-#popName  { font-size:2rem; color:#ffd54f; margin:.3rem 0; }
-#popMsg   { font-size:1rem; color:#b3e5fc; margin-bottom:1.2rem; line-height:1.5; }
-.pbtn {
-  background:linear-gradient(135deg,#f9a825,#e65100);
-  border:none; border-radius:50px; padding:.7rem 1.8rem;
-  font-size:1.2rem; font-family:inherit; color:#fff; cursor:pointer;
-}
+@keyframes popIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+#popEmoji{font-size:5rem;}
+#popName{font-size:2rem;color:#ffd54f;margin:.3rem 0;}
+#popMsg{font-size:1rem;color:#b3e5fc;margin-bottom:1.2rem;line-height:1.6;white-space:pre-line;}
+.pbtn{background:linear-gradient(135deg,#f9a825,#e65100);border:none;border-radius:50px;
+  padding:.7rem 1.8rem;font-size:1.2rem;font-family:inherit;color:#fff;cursor:pointer;}
 
 /* WIN */
-#win {
-  position:fixed; inset:0; display:none; flex-direction:column;
-  align-items:center; justify-content:center;
-  background:linear-gradient(135deg,#1a237e,#0d47a1);
-  z-index:60; color:#fff; text-align:center; padding:2rem;
-}
-#win h1 { font-size:3rem; color:#ffd54f; }
-#win p  { font-size:1.2rem; color:#b3e5fc; margin:1rem 0 2rem; line-height:1.6; }
-
-/* DRAG HINT */
-#dragHint {
-  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-  color:rgba(255,255,255,.7); font-size:1rem; z-index:8; pointer-events:none;
-  text-align:center; display:none;
-}
+#win{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#1a237e,#0d47a1);z-index:60;color:#fff;text-align:center;padding:2rem;}
+#win h1{font-size:3rem;color:#ffd54f;}
+#win p{font-size:1.2rem;color:#b3e5fc;margin:1rem 0 2rem;line-height:1.6;white-space:pre-line;}
 </style>
 </head>
 <body>
@@ -143,32 +98,26 @@ body.vr #vrLine { display:block; }
 <div id="vrLine"></div>
 <canvas id="gameCanvas"></canvas>
 
-<!-- LOADING -->
 <div id="loading">
-  <div class="emojis">🦒🐘🐵🦘🐻🍎🥒🍌</div>
+  <div class="emojis">🦒🐘🐵🐻🍎🥒</div>
   <h1>סַפָּארִי AR!</h1>
-  <p>חַיּוֹת וּפֵרוֹת עֲנָקִיִּים<br>מִסְתַּתְּרִים בַּבַּיִת שֶׁלָּנוּ! 🏠</p>
-  <p style="color:#ffd54f;font-size:.95rem">📱 הַסְּתוֹבֵב עִם הַטֵּלֵפוֹן<br>וְחַפֵּשׂ אוֹתָם!</p>
+  <p>שֵׁשׁ חַיּוֹת וּפֵרוֹת עֲנָקִיִּים<br>מִסְתַּתְּרִים בַּבַּיִת! 🏠</p>
+  <p style="color:#ffd54f;font-size:.95rem">📱 סוֹבֵב אֶת הַטֵּלֵפוֹן<br>לְכׇל הַצְּדָדִים וְחַפֵּשׂ!</p>
   <button id="startBtn" onclick="startGame()">▶ יַאלָּה נִמְצָא!</button>
   <p style="font-size:.8rem;color:#4a6fa0;margin-top:.9rem">אַפְשֵׁר גִּישָׁה לַמַּצְלֵמָה</p>
 </div>
 
-<!-- HUD -->
 <div id="hud">
   <div class="pill">⭐ <span id="scoreVal">0</span></div>
-  <div class="pill" id="foundBox">0 / 12 נִמְצְאוּ</div>
+  <div class="pill" id="foundBox">0 / 6 נִמְצְאוּ</div>
 </div>
 
-<!-- BOTTOM BAR -->
 <div id="bar">
   <button id="vrBtn" onclick="toggleVR()">📦 קַרְדְּבּוֹרְד</button>
   <span id="hint">סוֹבֵב אֶת הַטֵּלֵפוֹן לְכׇל הַצְּדָדִים!</span>
   <button id="catchBtn" onclick="catchIt()">🤚 תָּפַסְתִּי!</button>
 </div>
 
-<div id="dragHint">← גְּרֹר לְהִסְתּוֹבֵב →</div>
-
-<!-- POPUP -->
 <div id="popup">
   <div id="popBox">
     <div id="popEmoji">🦒</div>
@@ -178,7 +127,6 @@ body.vr #vrLine { display:block; }
   </div>
 </div>
 
-<!-- WIN -->
 <div id="win">
   <div style="font-size:4rem">🏆🎉🌟</div>
   <h1>כׇּל הַכָּבוֹד!</h1>
@@ -188,81 +136,61 @@ body.vr #vrLine { display:block; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ══════════════════════════════════════════════
-// CREATURES — Hebrew with nikud
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
+// 6 CREATURES ONLY — well spaced, high detail
+// ─────────────────────────────────────────────────────
 const DEFS = [
-  {id:'giraffe',  emoji:'🦒', he:'גִּירָפָה',   room:'סָלוֹן',       pts:10, floorY:0,    color:0xE8A838, accent:0x7A3A0A},
-  {id:'elephant', emoji:'🐘', he:'פִּיל',       room:'מִטְבָּח',     pts:10, floorY:0,    color:0x8A8FA8, accent:0x5A5F78},
-  {id:'monkey',   emoji:'🐵', he:'קּוֹף',       room:'שֵׁרוּתִים',   pts:10, floorY:0,    color:0x9C7248, accent:0xF5D5A0},
-  {id:'kangaroo', emoji:'🦘', he:'קֶנְגּוּרוּ', room:'חֶדֶר שֵׁינָה', pts:10, floorY:0,   color:0xC28A55, accent:0x8A5A28},
-  {id:'winnie',   emoji:'🐻', he:'פּוּ הַדֻּב',  room:'מִסְדְּרוֹן',  pts:10, floorY:0,    color:0xE0AE30, accent:0xCC2200},
-  {id:'chase',    emoji:'🐕', he:'צֵ׳יס',       room:'חֶדֶר עֲבוֹדָה',pts:10,floorY:0,   color:0xB8733A, accent:0x1a44cc},
-  {id:'skye',     emoji:'🦺', he:'סְקַיי',      room:'חֶדֶר יְלָדִים',pts:10,floorY:0,   color:0xF0A0C0, accent:0xFF1493},
-  {id:'apple',    emoji:'🍎', he:'תַּפּוּחַ עָנָק', room:'עַל הַסַּפָּה',pts:5, floorY:.52, color:0xDD2020, accent:0x228B22},
-  {id:'orange',   emoji:'🍊', he:'תַּפּוּז עָנָק', room:'שֻׁלְחָן אֹכֶל',pts:5,floorY:.52, color:0xFF8000, accent:0x228B22},
-  {id:'tomato',   emoji:'🍅', he:'עַגְבָנִיָּה', room:'מִשְׁטַח מִטְבָּח',pts:5,floorY:.52,color:0xFF3800, accent:0x228B22},
-  {id:'cucumber', emoji:'🥒', he:'מְלָפְפוֹן',  room:'עַל הַסַּפָּה',  pts:5, floorY:.42, color:0x2E8B22, accent:0x1A5C14},
-  {id:'banana',   emoji:'🍌', he:'בָּנָנָה',    room:'שֻׁלְחָן קָפֶה', pts:5, floorY:.48, color:0xFFE135, accent:0xA89000},
+  {id:'giraffe',  emoji:'🦒', he:'גִּירָפָה',      room:'סָלוֹן',         pts:10, floorY:0   },
+  {id:'elephant', emoji:'🐘', he:'פִּיל',           room:'מִטְבָּח',       pts:10, floorY:0   },
+  {id:'monkey',   emoji:'🐵', he:'קּוֹף',           room:'חֶדֶר שֵׁינָה', pts:10, floorY:0   },
+  {id:'winnie',   emoji:'🐻', he:'פּוּ הַדֻּב',     room:'מִסְדְּרוֹן',    pts:10, floorY:0   },
+  {id:'apple',    emoji:'🍎', he:'תַּפּוּחַ עָנָק', room:'עַל הַסַּפָּה',  pts:5,  floorY:.55 },
+  {id:'cucumber', emoji:'🥒', he:'מְלָפְפוֹן עָנָק',room:'שֻׁלְחָן אֹכֶל',pts:5,  floorY:.44 },
 ];
 
-// ══════════════════════════════════════════════
-// PLACE CREATURES: visible ring, 2.5–4 m away
-// so they are ALWAYS visible when you look around
-// ══════════════════════════════════════════════
-const RADIUS_MIN = 2.5;
-const RADIUS_MAX = 3.8;
+// 6 zones evenly spread at 3–4 m, well separated (60° apart)
 const ZONES = DEFS.map((def, i) => {
-  const angle = (i / DEFS.length) * Math.PI * 2;
-  const r = RADIUS_MIN + (i % 3) * ((RADIUS_MAX - RADIUS_MIN) / 2);
-  return {
-    def,
-    x: Math.sin(angle) * r,
-    y: def.floorY,
-    z: Math.cos(angle) * r,
-    mesh: null,
-  };
+  const angle = (i / DEFS.length) * Math.PI * 2 + Math.PI / DEFS.length;
+  const r = 3.2 + (i % 2) * 0.7;
+  return { def, x: Math.sin(angle)*r, y: def.floorY, z: Math.cos(angle)*r, mesh:null };
 });
 
-// ══════════════════════════════════════════════
-// THREE.JS SETUP
-// ══════════════════════════════════════════════
-let scene, renderer, camL, camR, vrMode = false;
-let score = 0;
-const found = new Set();
-let nearZone = null;
+// ─────────────────────────────────────────────────────
+// THREE.JS
+// ─────────────────────────────────────────────────────
+let scene, renderer, camL, camR, vrMode=false;
+let score=0;
+const found=new Set();
+let nearZone=null;
 
 function initThree() {
   scene = new THREE.Scene();
-
   camL = new THREE.PerspectiveCamera(68, window.innerWidth/window.innerHeight, 0.05, 100);
   camR = new THREE.PerspectiveCamera(68, (window.innerWidth/2)/window.innerHeight, 0.05, 100);
-  camL.position.set(0, 1.5, 0);
+  camL.position.set(0,1.5,0);
 
-  renderer = new THREE.WebGLRenderer({
-    canvas: document.getElementById('gameCanvas'),
-    alpha: true, antialias: true
-  });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gameCanvas'), alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5)); // higher pixel ratio for sharpness
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
   renderer.autoClear = false;
   renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  // Lighting
-  scene.add(new THREE.AmbientLight(0xfff8e8, 0.85));
-  const sun = new THREE.DirectionalLight(0xfff5d0, 1.4);
-  sun.position.set(4, 9, 5); scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xc8dff8, 0.5);
-  fill.position.set(-5, 4, -6); scene.add(fill);
-  const back = new THREE.DirectionalLight(0xffe0a0, 0.3);
-  back.position.set(0, -2, -5); scene.add(back);
+  // Rich multi-point lighting for better depth
+  scene.add(new THREE.AmbientLight(0xfff8e8, 0.7));
+  const key = new THREE.DirectionalLight(0xfff5d0, 1.5);
+  key.position.set(4,10,5); key.castShadow=true; scene.add(key);
+  const fill = new THREE.DirectionalLight(0xc8dff8, 0.6);
+  fill.position.set(-6,4,-6); scene.add(fill);
+  const back = new THREE.DirectionalLight(0xffe0a0, 0.35);
+  back.position.set(0,-2,-5); scene.add(back);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.2);
+  rim.position.set(0,8,-8); scene.add(rim);
 
-  // Build creatures — ALL VISIBLE from start
   ZONES.forEach(zone => {
     const g = buildCreature(zone.def);
     g.position.set(zone.x, zone.y, zone.z);
-    // Face toward player (origin)
     g.lookAt(new THREE.Vector3(0, zone.y, 0));
     scene.add(g);
     zone.mesh = g;
@@ -272,498 +200,596 @@ function initThree() {
   animate();
 }
 
-// ══════════════════════════════════════════════
-// MATERIAL HELPERS
-// ══════════════════════════════════════════════
-function mat(color, rough=0.72, metal=0.05) {
+// ─────────────────────────────────────────────────────
+// HIGH-RES MATERIAL + GEOMETRY HELPERS
+// ─────────────────────────────────────────────────────
+// All sphere/cyl use high segment counts for smoothness
+function M(color, rough=0.68, metal=0.08) {
   return new THREE.MeshStandardMaterial({color, roughness:rough, metalness:metal});
 }
-function S(g, c, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
-  const m = new THREE.Mesh(new THREE.SphereGeometry(1,20,16), mat(c));
+function Mskin(color) { return M(color, 0.82, 0.0); }
+function Mfur(color)  { return M(color, 0.92, 0.0); }
+function Mhard(color) { return M(color, 0.45, 0.15); }
+
+// Primitives — high segment counts
+function sph(g, mat, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 26), mat);
   m.scale.set(sx,sy,sz); m.position.set(px,py,pz); m.rotation.set(rx,ry,rz);
-  g.add(m); return m;
+  m.castShadow=true; g.add(m); return m;
 }
-function C(g, c, rt,rb,h, px,py,pz, rx=0,ry=0,rz=0, seg=10) {
-  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg), mat(c));
-  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz); g.add(m); return m;
+function cyl(g, mat, rt,rb,h, px,py,pz, rx=0,ry=0,rz=0) {
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h, 18,4), mat);
+  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz);
+  m.castShadow=true; g.add(m); return m;
 }
-function K(g, c, r,h, px,py,pz, rx=0,ry=0,rz=0) {
-  const m = new THREE.Mesh(new THREE.ConeGeometry(r,h,10), mat(c));
-  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz); g.add(m); return m;
+function con(g, mat, r,h, px,py,pz, rx=0,ry=0,rz=0) {
+  const m = new THREE.Mesh(new THREE.ConeGeometry(r,h, 14,4), mat);
+  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz);
+  m.castShadow=true; g.add(m); return m;
 }
-function B(g, c, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
-  const m = new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz), mat(c));
-  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz); g.add(m); return m;
-}
-function T(g, c, R,r, px,py,pz, rx=Math.PI/2) {
-  const m = new THREE.Mesh(new THREE.TorusGeometry(R,r,10,20), mat(c));
+function tor(g, mat, R,r, px,py,pz, rx=Math.PI/2) {
+  const m = new THREE.Mesh(new THREE.TorusGeometry(R,r,14,28), mat);
   m.position.set(px,py,pz); m.rotation.x=rx; g.add(m); return m;
 }
-function eyes2(g, py, pz, sep=0.1) {
+function bx(g, mat, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz,3,3,3), mat);
+  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz);
+  m.castShadow=true; g.add(m); return m;
+}
+
+function eyePair(g, py, pz, sep=0.1, scl=1) {
   [-sep,sep].forEach(x => {
-    S(g,0xffffff, .06,.06,.045, x,py,pz);
-    S(g,0x111111, .035,.035,.035, x*.7,py,pz+.032);
-    S(g,0xffffff, .013,.013,.013, x*.7+.012,py+.01,pz+.046);
+    sph(g, M(0xffffff,.3,.0), .068*scl,.068*scl,.05*scl, x,py,pz);
+    sph(g, M(0x0d0d0d,.5,.0), .042*scl,.042*scl,.042*scl, x*.72,py,pz+.038*scl);
+    // catchlight
+    sph(g, M(0xffffff,.3,.0), .016*scl,.016*scl,.016*scl, x*.72+.015*scl,py+.014*scl,pz+.055*scl);
   });
 }
-function nostrils2(g, c, py, pz, sep=0.055) {
-  [-sep,sep].forEach(x => S(g,0x2a0a00,.032,.026,.022, x,py,pz));
+function nostrilPair(g, py, pz, sep=0.055) {
+  [-sep,sep].forEach(x => sph(g, M(0x1a0500,.9,.0), .036,.028,.024, x,py,pz));
+}
+function legSet(g, mFur, mHoof, coords, upperH, lowerH) {
+  coords.forEach(([x,z])=>{
+    cyl(g, mFur, .082,.074, upperH, x, upperH/2, z);
+    cyl(g, mFur, .072,.064, lowerH, x, upperH+lowerH/2-.04, z);
+    sph(g, mHoof, .095,.065,.095, x, upperH+lowerH-.02, z); // hoof
+  });
 }
 
 function buildCreature(def) {
   const g = new THREE.Group();
-  const c=def.color, a=def.accent;
   ({
-    giraffe:  ()=>buildGiraffe(g,c,a),
-    elephant: ()=>buildElephant(g,c,a),
-    monkey:   ()=>buildMonkey(g,c,a),
-    kangaroo: ()=>buildKangaroo(g,c,a),
-    winnie:   ()=>buildWinnie(g,c,a),
-    chase:    ()=>buildDog(g,c,a,'chase'),
-    skye:     ()=>buildDog(g,c,a,'skye'),
-    apple:    ()=>buildSphere(g,c,a,'apple'),
-    orange:   ()=>buildSphere(g,c,a,'orange'),
-    tomato:   ()=>buildSphere(g,c,a,'tomato'),
-    cucumber: ()=>buildCucumber(g,c,a),
-    banana:   ()=>buildBanana(g,c,a),
+    giraffe:  ()=>buildGiraffe(g),
+    elephant: ()=>buildElephant(g),
+    monkey:   ()=>buildMonkey(g),
+    winnie:   ()=>buildWinnie(g),
+    apple:    ()=>buildApple(g),
+    cucumber: ()=>buildCucumber(g),
   }[def.id]||(() => {}))();
   return g;
 }
 
-// ══════════════════════════════════════════════════════
-// GIRAFFE — tall neck, spots, ossicones, mane
-// ══════════════════════════════════════════════════════
-function buildGiraffe(g,c,a) {
-  // 4 legs (long, two-tone)
-  [[-0.19,-.13],[0.19,-.13],[-0.16,.13],[0.16,.13]].forEach(([x,z])=>{
-    C(g,c,.075,.068,.56, x,.28,z);
-    C(g,a,.062,.058,.3, x,-.04,z);
-    S(g,0x1a0800,.09,.06,.09, x,-.22,z);
+// ═══════════════════════════════════════════════════════
+// GIRAFFE — ~1 m, highly detailed
+// ═══════════════════════════════════════════════════════
+function buildGiraffe(g) {
+  const fur  = Mfur(0xE8A838);
+  const spot = Mfur(0x7A3A0A);
+  const dark = Mfur(0xC07020);
+  const hoof = Mhard(0x1a0800);
+  const white= Mfur(0xFFFDE7);
+
+  // Legs — two-tone (lower leg darker)
+  const legCoords=[[-0.19,-.13],[0.19,-.13],[-0.16,.13],[0.16,.13]];
+  legCoords.forEach(([x,z])=>{
+    cyl(g,fur,  .078,.070,.52, x,.26,z);
+    cyl(g,dark, .068,.060,.30, x,-.06,z);
+    sph(g,hoof, .10,.068,.10,  x,-.25,z);
   });
-  // Body
-  S(g,c, .4,.34,.3, 0,.78,0);
-  // Neck (long)
-  C(g,c,.12,.18,.82, 0,1.28,.04);
-  // Neck spots
+
+  // Body — slightly elongated
+  sph(g,fur, .42,.35,.32, 0,.80,0);
+  // Belly slightly paler
+  sph(g,Mfur(0xF0C060), .3,.24,.24, 0,.76,.18);
+
+  // Neck — tall, tapering
+  cyl(g,fur, .13,.20,.86, 0,1.28,.03);
+  // Neck-body join bulge
+  sph(g,fur, .22,.18,.2, 0,.88,.02);
+
+  // Mane — alternating dark triangles along neck spine
   for(let i=0;i<7;i++){
-    const ang=Math.random()*Math.PI*2, r=.14;
-    S(g,a,.08,.07,.04, Math.cos(ang)*r, .9+Math.random()*.7, Math.sin(ang)*r+.04);
+    const y=.88+i*.13;
+    con(g,spot,.06,.16, 0,y,-.13, -.38);
   }
-  // Mane
-  for(let i=0;i<6;i++) K(g,a, .055,.2, 0, .88+i*.14, -.13, -.35,0,0);
-  // Head
-  S(g,c, .26,.21,.23, 0,1.8,.08);
-  // Long jaw
-  S(g,c, .18,.11,.2, 0,1.7,.35);
-  nostrils2(g,a,1.66,.5,.055);
-  eyes2(g,1.85,.3,.1);
-  // Ossicones
-  [-0.11,0.11].forEach(x=>{ C(g,a,.025,.038,.22, x,1.99,.05); S(g,a,.04,.04,.04, x,2.12,.05); });
-  // Body spots
-  for(let i=0;i<12;i++){
-    const ang=Math.random()*Math.PI*2, r=.36+Math.random()*.06;
-    S(g,a,.09+Math.random()*.03,.075,.04, Math.cos(ang)*r, .6+Math.random()*.38, Math.sin(ang)*r);
-  }
-  // Tail
-  C(g,c,.025,.02,.3, 0,.68,-.32, .6);
-  S(g,a,.055,.1,.055, 0,.54,-.47);
-}
 
-// ══════════════════════════════════════════════════════
-// ELEPHANT — huge, detailed trunk, tusks, wrinkles
-// ══════════════════════════════════════════════════════
-function buildElephant(g,c,a) {
-  [[-0.24,-.16],[0.24,-.16],[-0.22,.16],[0.22,.16]].forEach(([x,z])=>{
-    C(g,c,.13,.11,.44, x,.22,z);
-    C(g,a,.09,.085,.06, x,.0,z);  // ankle wrinkle
-    S(g,0x1a1a1a,.14,.07,.14, x,-.05,z);
-  });
-  // Big body
-  S(g,c, .56,.52,.45, 0,.76,0);
-  // Neck
-  C(g,c,.25,.28,.2, 0,1.15,.08);
-  // Head (domed)
-  S(g,c, .42,.4,.38, 0,1.44,.1);
-  S(g,c, .25,.2,.2, 0,1.72,.1);  // forehead dome
-  // Big ears
-  [-1,1].forEach(s=>{
-    S(g,c,  .16,.5,.07, s*.62,1.44,.06);
-    S(g,a,  .12,.4,.05, s*.62,1.42,.1);  // inner pink
-  });
-  // Trunk (curved, segmented)
-  const trunkPts = [];
-  for(let i=0;i<=8;i++){
-    const t=i/8;
-    trunkPts.push(new THREE.Vector3(0, 1.22-.22*t, .5+Math.sin(t*1.8)*.32));
-  }
-  for(let i=0;i<8;i++){
-    const p=trunkPts[i], q=trunkPts[i+1];
-    const mid=p.clone().add(q).multiplyScalar(.5);
-    const r=.11-.012*i;
-    S(g,c, r,r*.68,r, mid.x,mid.y,mid.z);
-    if(i%2===0) T(g,a, r+.01,.02, mid.x,mid.y,mid.z); // wrinkle ring
-  }
-  // Nostrils at tip
-  const tip=trunkPts[8];
-  [-0.05,0.05].forEach(x=>S(g,0x2a0a00,.035,.03,.025, tip.x+x,tip.y-.04,tip.z+.02));
-  // Tusks
-  [-1,1].forEach(s=>{ C(g,0xFFFBE6,.048,.028,.42, s*.16,1.24,.62, .38,0,s*.28); S(g,0xFFFBE6,.03,.03,.03, s*.22+s*.06,1.16,.98); });
-  eyes2(g,1.52,.44,.15);
-  // Tail
-  C(g,c,.03,.025,.24, 0,.72,-.48, .5); S(g,a,.07,.12,.07, 0,.6,-.63);
-}
-
-// ══════════════════════════════════════════════════════
-// MONKEY — expressive face, long tail, fingers
-// ══════════════════════════════════════════════════════
-function buildMonkey(g,c,a) {
-  [[-0.12,-.1],[0.12,-.1]].forEach(([x,z])=>{
-    C(g,c,.072,.065,.36, x,.18,z); S(g,0x1a0800,.082,.06,.082, x,-.02,z);
-  });
-  // Body
-  S(g,c, .32,.36,.3, 0,.56,0);
-  S(g,a, .22,.24,.16, 0,.58,.22); // belly
-  // Arms
-  [-1,1].forEach(s=>{
-    C(g,c,.064,.058,.4, s*.36,.6,0, 0,0,s*.82);
-    S(g,c,.1,.09,.1, s*.62,.47,.04);
-    for(let f=0;f<4;f++){
-      const fa=(f/3-.5)*.55;
-      C(g,c,.024,.019,.12, s*.62+Math.cos(fa)*.09,.37+Math.sin(fa)*.05,Math.sin(f*.48)*.05, .2);
-    }
-  });
-  C(g,c,.12,.14,.15, 0,.9,.06);
   // Head
-  S(g,c, .28,.28,.26, 0,1.14,.06);
-  S(g,a, .22,.19,.12, 0,1.12,.27); // muzzle
+  sph(g,fur, .27,.22,.25, 0,1.82,.09);
+  // Jaw extension
+  sph(g,fur, .20,.12,.22, 0,1.71,.37);
+  nostrilPair(g,1.67,.52,.056);
+  eyePair(g,1.88,.3,.10);
+
+  // Ossicones (horns)
+  [-0.12,0.12].forEach(x=>{
+    cyl(g,dark,.028,.042,.24, x,1.99,.05);
+    sph(g,Mhard(0x5a3010),.048,.048,.048, x,2.13,.05);
+  });
+
   // Ears
-  [-1,1].forEach(s=>{ S(g,c,.13,.13,.08, s*.32,1.14,.02); S(g,a,.09,.09,.06, s*.32,1.14,.06); });
-  // Brow
-  S(g,0x5a3010, .28,.055,.1, 0,1.23,.26);
-  nostrils2(g,a,1.08,.37,.053);
-  eyes2(g,1.19,.3,.11);
-  // Tail curled
-  for(let i=0;i<12;i++){
-    const t=i/11;
-    const m=new THREE.Mesh(new THREE.SphereGeometry(.062-.009*t,8,8),mat(c));
-    m.position.set(-.12-Math.sin(t*2.8)*.36, .46+t*.52, -.24-t*.05);
-    g.add(m);
-  }
-  S(g,a, .075,.075,.075, -.12-Math.sin(2.8)*.36, .46+.52, -.29);
-}
-
-// ══════════════════════════════════════════════════════
-// KANGAROO — big hind legs, pouch with baby
-// ══════════════════════════════════════════════════════
-function buildKangaroo(g,c,a) {
   [-1,1].forEach(s=>{
-    C(g,c,.11,.1,.55, s*.16,.28,0);
-    C(g,c,.09,.08,.42, s*.15,-.02,.2, .55);
-    S(g,0x1a0800,.1,.065,.18, s*.15,-.22,.3);
+    sph(g,fur, .10,.14,.06, s*.28,1.83,.02, 0,0,s*.3);
+    sph(g,Mskin(0xF0C880), .065,.10,.04, s*.28,1.83,.05, 0,0,s*.3);
   });
-  [-1,1].forEach(s=>{ C(g,c,.055,.05,.28, s*.3,.86,0, 0,0,s*.72); S(g,c,.082,.075,.082, s*.5,.74,.02); });
-  S(g,c, .34,.5,.3, 0,.74,0);
-  S(g,a, .22,.2,.14, 0,.64,.3); // pouch
-  S(g,c, .11,.12,.11, 0,.78,.34); // baby body
-  S(g,c, .08,.08,.08, 0,.9,.36); // baby head
-  eyes2(g,.92,.39,.03);
-  C(g,c,.12,.14,.22, 0,1.1,.06);
-  S(g,c, .24,.24,.22, 0,1.4,.06);
-  S(g,c, .16,.12,.25, 0,1.34,.3); // muzzle
-  [-1,1].forEach(s=>{ C(g,c,.055,.075,.32, s*.15,1.68,.02, 0,0,s*.1); S(g,a,.045,.045,.045, s*.16,1.85,.02); });
-  nostrils2(g,a,1.3,.5,.055);
-  eyes2(g,1.44,.3,.1);
-  C(g,c,.11,.08,.55, 0,.56,-.37, .55);
+
+  // Body spots — irregular polygon-ish blobs
+  const spotPositions = [
+    [0,.62,.38,.06],[.3,.75,.34,.07],[-.32,.70,.3,.065],[.28,.92,.3,.055],
+    [-.26,.88,.28,.06],[.05,.62,-.34,.07],[-.28,.68,-.3,.065],
+    [0,.82,.06,.08],[.24,1.0,.06,.055],[-.22,1.0,.06,.055],
+    [0,1.18,.05,.06],[.14,1.3,.05,.052],[-.14,1.3,.05,.052],
+    [0,.48,.3,.07],[.22,.5,.26,.06],[-.2,.5,.24,.06],
+  ];
+  spotPositions.forEach(([x,y,z,r])=>sph(g,spot,r*1.4,r,r*.5, x,y,z));
+
+  // Tail
+  cyl(g,fur,.028,.022,.3, 0,.70,-.33, .62);
+  sph(g,spot,.062,.11,.062, 0,.56,-.5);
 }
 
-// ══════════════════════════════════════════════════════
-// WINNIE — chubby, red shirt, honey pot
-// ══════════════════════════════════════════════════════
-function buildWinnie(g,c,a) {
-  [[-0.16,-.1],[0.16,-.1],[-0.15,.1],[0.15,.1]].forEach(([x,z])=>{
-    C(g,c,.088,.082,.32, x,.16,z); S(g,c,.11,.075,.11, x,-.01,z);
+// ═══════════════════════════════════════════════════════
+// ELEPHANT — massive, wrinkled, detailed trunk
+// ═══════════════════════════════════════════════════════
+function buildElephant(g) {
+  const skin  = Mfur(0x8A8FA8);
+  const dark  = Mfur(0x6A6F88);
+  const pink  = Mskin(0xE8B4B0);
+  const tusk  = Mhard(0xFFFBE6);
+  const hoof  = Mhard(0x1a1a2a);
+
+  // Thick legs with ankle wrinkles
+  [[-0.26,-.17],[0.26,-.17],[-0.23,.17],[0.23,.17]].forEach(([x,z])=>{
+    cyl(g,skin,.14,.12,.44, x,.22,z);
+    // ankle wrinkle rings
+    for(let w=0;w<3;w++) tor(g,dark,.135,.016, x,.08+w*.06,z);
+    sph(g,hoof,.155,.072,.155, x,-.05,z);
   });
-  S(g,c, .42,.44,.4, 0,.58,0);
-  S(g,a, .4,.3,.38, 0,.62,.02); // red shirt
-  [-1,1].forEach(s=>{ C(g,c,.09,.085,.32, s*.37,.7,.04, 0,0,s*.78); S(g,c,.11,.1,.11, s*.56,.56,.05); });
-  C(g,c,.15,.17,.14, 0,1.0,.05);
-  S(g,c, .34,.34,.32, 0,1.28,.06);
-  S(g,0xF5CBA7, .24,.18,.14, 0,1.22,.32); // muzzle
-  S(g,0x2a1010, .07,.056,.056, 0,1.3,.46); // nose
-  [-1,1].forEach(s=>{ S(g,c,.15,.15,.1, s*.32,1.54,.04); S(g,a,.1,.1,.07, s*.32,1.54,.09); });
-  eyes2(g,1.34,.38,.13);
-  // Honey pot
-  C(g,0xE8C84A,.092,.08,.2, .56,.56,.08); S(g,0xE8C84A,.1,.065,.1, .56,.68,.08);
-  C(g,0xE8C84A,.052,.092,.065, .56,.47,.08); S(g,0x4a3000,.06,.06,.06, .56,.44,.08);
-}
 
-// ══════════════════════════════════════════════════════
-// DOG (Chase / Skye) — PAW PATROL
-// ══════════════════════════════════════════════════════
-function buildDog(g,c,a,type) {
-  [[-0.13,-.1],[0.13,-.1],[-0.12,.1],[0.12,.1]].forEach(([x,z])=>{
-    C(g,c,.07,.064,.3, x,.15,z); S(g,0x1a0800,.08,.057,.08, x,-.02,z);
+  // Big barrel body
+  sph(g,skin, .60,.56,.50, 0,.78,0);
+  // Wrinkle lines on body (thin dark rings)
+  for(let w=0;w<4;w++) tor(g,dark,.58,.018, 0,.55+w*.11,0);
+
+  // Neck
+  cyl(g,skin,.28,.32,.22, 0,1.18,.08);
+
+  // Head — large domed
+  sph(g,skin, .46,.44,.42, 0,1.50,.1);
+  sph(g,skin, .28,.24,.24, 0,1.80,.1); // forehead dome
+
+  // Ear wrinkles
+  [-1,1].forEach(s=>{
+    sph(g,skin,.18,.58,.08, s*.70,1.50,.06);
+    sph(g,pink,.14,.46,.06, s*.70,1.48,.11);
+    // ear vein lines (thin dark stripes)
+    for(let v=0;v<4;v++) cyl(g,dark,.008,.008,.45, s*.70,1.50+.04-v*.12,.08, 0,0,s*(v*.12-.24));
   });
-  S(g,c, .32,.3,.28, 0,.48,0);
-  [-1,1].forEach(s=>{ C(g,c,.065,.06,.26, s*.3,.54,0, 0,0,s*.65); S(g,c,.086,.078,.086, s*.47,.45,.04); });
-  C(g,c,.13,.15,.18, 0,.78,.06);
-  T(g,a, .2,.048, 0,.76,.1);  // collar
-  C(g,0xFFD700,.07,.07,.034, 0,.74,.28);  // badge
-  S(g,c, .28,.26,.26, 0,1.04,.08);
-  const mC = type==='chase'?0xF5D5A0:0xF8C0C8;
-  S(g,mC, .18,.12,.14, 0,1.0,.33); // muzzle
-  S(g,0x222222,.048,.043,.043, 0,1.04,.47); // nose
-  if(type==='chase'){
-    [-1,1].forEach(s=>S(g,c,.11,.22,.08, s*.28,1.0,-.06, 0,0,s*.3));
-    B(g,0x1155cc, .2,.18,.12, 0,.54,-.24);
-  } else {
-    [-1,1].forEach(s=>{ K(g,a,.1,.3, s*.26,1.24,.04, 0,0,s*.22); K(g,mC,.065,.22, s*.26,1.24,.06, 0,0,s*.22); });
-    B(g,0xff44aa, .18,.16,.12, 0,.54,-.24);
+
+  // Trunk — 10-segment smooth curve with wrinkle rings
+  const tPts=[];
+  for(let i=0;i<=10;i++){
+    const t=i/10;
+    tPts.push({x:0, y:1.28-.24*t, z:.52+Math.sin(t*1.9)*.36, r:.12-.01*i});
   }
-  [-1,1].forEach(s=>S(g,a,.075,.026,.022, s*.1,1.14,.33)); // eyebrows
-  eyes2(g,1.08,.32,.11);
-  C(g,c,.042,.032,.26, 0,.56,-.32, -.68); S(g,c,.06,.06,.06, 0,.44,-.5);
+  for(let i=0;i<10;i++){
+    const a=tPts[i], b=tPts[i+1];
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2, mz=(a.z+b.z)/2, mr=(a.r+b.r)/2;
+    sph(g,skin, mr,mr*.7,mr, mx,my,mz);
+    if(i%2===0) tor(g,dark, mr+.014,.018, mx,my,mz);
+  }
+  // Trunk tip nostrils
+  const tip=tPts[10];
+  [-0.05,0.05].forEach(x=>sph(g,M(0x2a0a00,.9),.038,.032,.028, tip.x+x,tip.y-.05,tip.z+.02));
+
+  // Tusks — curved
+  [-1,1].forEach(s=>{
+    cyl(g,tusk,.052,.030,.46, s*.18,1.26,.66, .40,0,s*.30);
+    sph(g,tusk,.034,.034,.034, s*.24,1.15,1.04);
+  });
+
+  eyePair(g,1.58,.46,.16);
+
+  // Tail
+  cyl(g,skin,.032,.026,.26, 0,.74,-.52, .52);
+  // Tail tuft
+  for(let t=0;t<8;t++){
+    const a=t/8*Math.PI*2;
+    cyl(g,dark,.01,.01,.1, Math.cos(a)*.06, .6,Math.sin(a)*.06+-.62, .3);
+  }
 }
 
-// ══════════════════════════════════════════════════════
-// FRUITS
-// ══════════════════════════════════════════════════════
-function buildSphere(g,c,a,type) {
-  S(g,c, .48,.48,.48, 0,.54,0);
-  if(type==='orange'){
-    for(let i=0;i<22;i++){
-      const ang=Math.random()*Math.PI*2, b=(Math.random()-.5)*Math.PI*.8;
-      S(g,c,.042,.042,.03, Math.cos(b)*Math.cos(ang)*.48,.54+Math.cos(b)*Math.sin(ang)*.48,Math.sin(b)*.48);
-    }
-    S(g,0x8B4513, .065,.045,.065, 0,.1,0);
-  }
-  if(type==='tomato'){
-    for(let i=0;i<5;i++){
-      const a2=i/5*Math.PI*2;
-      S(g,0x2a6b10,.11,.065,.034, Math.cos(a2)*.15,1.02,Math.sin(a2)*.15);
-    }
-    for(let i=0;i<5;i++){
-      const a2=i/5*Math.PI*2;
-      C(g,0xCC2e00,.012,.012,.72, Math.cos(a2)*.46,.54,Math.sin(a2)*.46, 0,0,a2+Math.PI/2);
-    }
-  }
-  C(g,0x3B7A1A,.034,.026,.24, 0,1.04,0);
-  S(g,0x2d8a1a,.15,.22,.065, .14,1.1,0, 0,0,-.48);
-  S(g,0x2d8a1a,.13,.2,.055, -.11,1.08,0, 0,0,.42);
-}
+// ═══════════════════════════════════════════════════════
+// MONKEY — expressive, long arms, detailed hands
+// ═══════════════════════════════════════════════════════
+function buildMonkey(g) {
+  const fur   = Mfur(0x9C7248);
+  const belly = Mskin(0xF5D5A0);
+  const dark  = Mfur(0x6A4A28);
+  const hoof  = Mhard(0x1a0800);
 
-function buildCucumber(g,c,a) {
-  C(g,c,.18,.15,.88, 0,.5,0);
-  S(g,c,.18,.14,.18, 0,.95,0); S(g,a,.16,.12,.16, 0,.08,0);
-  for(let row=0;row<4;row++){
-    const ang0=row/4*Math.PI*2;
-    for(let j=0;j<7;j++) S(g,a,.038,.03,.03, Math.cos(ang0)*.18,.2+j*.11,Math.sin(ang0)*.18);
-  }
-  for(let i=0;i<6;i++){
-    const a2=i/6*Math.PI*2; S(g,0xd4a830,.028,.022,.022, Math.cos(a2)*.065,.07,Math.sin(a2)*.065);
-  }
-  g.rotation.z=.24;
-}
+  // Short legs
+  [[-0.13,-.1],[0.13,-.1]].forEach(([x,z])=>{
+    cyl(g,fur,.078,.070,.38, x,.19,z);
+    sph(g,hoof,.090,.065,.090, x,-.02,z);
+  });
 
-function buildBanana(g,c,a) {
+  // Body — slightly pear-shaped
+  sph(g,fur, .34,.38,.32, 0,.58,0);
+  sph(g,belly, .24,.26,.18, 0,.60,.24); // belly patch
+
+  // Long arms with detailed hands
+  [-1,1].forEach(s=>{
+    cyl(g,fur,.068,.062,.22, s*.36,.72,0, 0,0,s*.72); // upper arm
+    cyl(g,fur,.058,.052,.22, s*.54,.54,.06, 0,0,s*.55); // forearm
+    sph(g,fur,.10,.090,.10, s*.66,.44,.08); // palm
+    // 4 fingers
+    for(let f=0;f<4;f++){
+      const fa=(f/3-.5)*.5;
+      cyl(g,belly,.022,.018,.12, s*.66+Math.cos(fa)*.09,.33+Math.sin(fa)*.04,Math.sin(f*.46)*.05+.08, .2);
+      sph(g,belly,.028,.022,.028, s*.66+Math.cos(fa)*.09,.27+Math.sin(fa)*.04,Math.sin(f*.46)*.05+.08+.05);
+    }
+    // thumb
+    cyl(g,belly,.02,.016,.08, s*.60,.40,.16, 0,0,s*.9);
+  });
+
+  // Neck
+  cyl(g,fur,.13,.15,.16, 0,.92,.06);
+
+  // Head — round, big
+  sph(g,fur, .30,.30,.28, 0,1.18,.07);
+
+  // Muzzle — two-toned protruding
+  sph(g,belly, .24,.20,.14, 0,1.16,.29);
+  sph(g,belly, .16,.10,.10, 0,1.08,.40); // lower jaw
+  nostrilPair(g,1.14,.42,.054);
+
+  // Big rounded ears
+  [-1,1].forEach(s=>{
+    sph(g,fur, .14,.14,.09, s*.34,1.18,.03);
+    sph(g,belly, .10,.10,.07, s*.34,1.18,.07);
+  });
+
+  // Heavy brow ridge
+  sph(g,dark, .30,.058,.12, 0,1.27,.27);
+
+  eyePair(g,1.24,.32,.115);
+
+  // Tail — long curled, with lighter tip
   const N=16;
   for(let i=0;i<N;i++){
     const t=i/(N-1);
-    const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),mat(i===0||i===N-1?a:c));
-    mesh.scale.set(.145-.025*t, .17-.022*t, .145-.025*t);
-    mesh.position.set(Math.sin(t*1.4)*.44, t*.85+.06, 0);
-    g.add(mesh);
-    if(i>0&&i<N-1){
-      for(let r=0;r<3;r++){
-        const ra=r/3*Math.PI*2;
-        const rm=new THREE.Mesh(new THREE.SphereGeometry(.028,6,6),mat(a));
-        rm.position.set(Math.sin(t*1.4)*.44+Math.cos(ra)*.145, t*.85+.06, Math.sin(ra)*.14);
-        g.add(rm);
-      }
-    }
+    const r=.072-.008*t;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(r,14,12), i>N-4?belly:fur);
+    m.position.set(-.14-Math.sin(t*3.0)*.42, .46+t*.55, -.28-t*.06);
+    m.castShadow=true;
+    g.add(m);
   }
-  C(g,0x5a3510,.028,.028,.14, 0,.01,0);
-  g.rotation.z=-.2;
 }
 
-// ══════════════════════════════════════════════
-// ORIENTATION (gyro + touch/mouse)
-// ══════════════════════════════════════════════
-let yaw=0, pitch=0, hasGyro=false;
-let gyroA=0, gyroB=90, gyroG=0;
-let tx=0, ty=0;
-const eu = new THREE.Euler(0,0,0,'YXZ');
+// ═══════════════════════════════════════════════════════
+// WINNIE THE POOH — chubby, detailed, honey pot
+// ═══════════════════════════════════════════════════════
+function buildWinnie(g) {
+  const fur   = Mfur(0xE0AE30);
+  const shirt = M(0xCC2200, .7, .05);
+  const belly = Mskin(0xF5D5A0);
+  const nose  = M(0x2a1010, .9, .0);
+  const honey = M(0xE8C84A, .55, .12);
+  const wood  = M(0x5a3510, .9, .0);
+  const hoof  = Mhard(0x3a2a10);
+  const gold  = Mhard(0xFFD700);
 
-window.addEventListener('deviceorientation', e=>{
-  if(e.alpha!=null){ gyroA=e.alpha||0; gyroB=e.beta||90; gyroG=e.gamma||0; hasGyro=true;
-    document.getElementById('dragHint').style.display='none'; }
+  // Stubby legs
+  [[-0.17,-.1],[0.17,-.1],[-0.16,.1],[0.16,.1]].forEach(([x,z])=>{
+    cyl(g,fur,.096,.088,.34, x,.17,z);
+    sph(g,hoof,.12,.082,.12, x,-.01,z);
+  });
+
+  // Chubby body
+  sph(g,fur, .44,.47,.42, 0,.60,0);
+  // Red crop shirt (covers lower 60% of body)
+  sph(g,shirt, .42,.30,.40, 0,.62,.02);
+  // White belly peek
+  sph(g,belly, .18,.20,.12, 0,.70,.38);
+
+  // Chunky arms
+  [-1,1].forEach(s=>{
+    cyl(g,fur,.10,.09,.34, s*.40,.72,.04, 0,0,s*.80);
+    sph(g,fur,.12,.11,.12, s*.60,.58,.06);
+    // paw pads
+    sph(g,belly,.08,.05,.08, s*.62,.52,.1);
+    for(let f=0;f<4;f++){
+      const fa=(f/3-.5)*.4;
+      sph(g,belly,.026,.022,.022, s*.62+Math.cos(fa)*.08,.47+Math.sin(fa)*.03,.1+Math.sin(f*.4)*.04);
+    }
+  });
+
+  // Neck
+  cyl(g,fur,.17,.19,.15, 0,1.02,.05);
+
+  // Big round head
+  sph(g,fur, .36,.36,.34, 0,1.32,.07);
+
+  // Muzzle — protruding, lighter
+  sph(g,belly, .26,.19,.16, 0,1.26,.34);
+  sph(g,belly, .18,.14,.12, 0,1.18,.42); // lower jaw/chin
+  sph(g,nose, .075,.058,.058, 0,1.34,.50); // nose
+
+  // Round ears with inner pink
+  [-1,1].forEach(s=>{
+    sph(g,fur, .16,.16,.11, s*.34,1.58,.05);
+    sph(g,belly, .11,.11,.08, s*.34,1.58,.09);
+  });
+
+  eyePair(g,1.38,.40,.14);
+
+  // Honey pot in right hand
+  cyl(g,honey,.10,.09,.22, .62,.58,.09);
+  sph(g,honey,.12,.07,.12, .62,.71,.09);
+  cyl(g,honey,.058,.10,.07, .62,.48,.09);
+  sph(g,wood, .065,.065,.065, .62,.45,.09);
+  // Label line on pot
+  tor(g,wood,.10,.012, .62,.60,.09);
+}
+
+// ═══════════════════════════════════════════════════════
+// GIANT APPLE — highly detailed
+// ═══════════════════════════════════════════════════════
+function buildApple(g) {
+  const skin  = M(0xDD2020,.65,.05);
+  const shine = M(0xFF5050,.4,.15);
+  const green = M(0x228B22,.7,.05);
+  const brown = M(0x5a3510,.9,.0);
+  const cream = M(0xFFF8E8,.8,.02);
+
+  // Main apple body — slightly flattened sphere with top indent
+  sph(g,skin, .50,.47,.50, 0,.56,0);
+  // Highlight specular patch
+  sph(g,shine, .18,.14,.12, .22,.74,.3);
+  // Subtle rib lines (5 ribs)
+  for(let i=0;i<5;i++){
+    const a=i/5*Math.PI*2;
+    cyl(g,M(0xBB1818,.7,.0),.012,.012,.8, Math.cos(a)*.5,0.56,Math.sin(a)*.5, 0,0,a+Math.PI/2);
+  }
+  // Bottom dimple
+  sph(g,M(0xBB1010,.7),.06,.045,.06, 0,.1,.01);
+
+  // Thick stem
+  cyl(g,brown,.038,.028,.26, 0,1.05,.0, -.08);
+  cyl(g,brown,.028,.022,.12, .05,1.28,.0, -.24);
+
+  // Two leaves
+  sph(g,green,.18,.24,.07, .14,1.14,-.04, 0,0,-.52);
+  sph(g,green,.14,.20,.06, -.12,1.12,-.02, 0,0,.48);
+  // Leaf veins
+  cyl(g,M(0x1a6810),.008,.008,.2, .14,1.14,-.04, 0,0,-.52);
+  cyl(g,M(0x1a6810),.008,.008,.18, -.12,1.12,-.02, 0,0,.48);
+
+  // Tiny flower remnant at bottom
+  for(let i=0;i<5;i++){
+    const a=i/5*Math.PI*2;
+    sph(g,cream,.03,.02,.02, Math.cos(a)*.07,.12,Math.sin(a)*.07);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// GIANT CUCUMBER — highly detailed
+// ═══════════════════════════════════════════════════════
+function buildCucumber(g) {
+  const skin  = M(0x2E8B22,.70,.04);
+  const dark  = M(0x1A5C14,.80,.04);
+  const light = M(0x5ab030,.65,.06);
+  const tip   = M(0x1A5C14,.82,.0);
+  const seed  = M(0xd4e870,.6,.08);
+
+  // Main body — tapered cylinder
+  cyl(g,skin,.18,.14,.90, 0,.52,0);
+  // Surface texture — 6 rows of bumps
+  for(let row=0;row<6;row++){
+    const ang0=row/6*Math.PI*2;
+    for(let j=0;j<8;j++){
+      const y=.14+j*.1;
+      sph(g,dark,.042,.034,.034, Math.cos(ang0)*.19,y,Math.sin(ang0)*.19);
+    }
+  }
+  // Stripe lines (lighter ridges)
+  for(let r=0;r<6;r++){
+    const a=r/6*Math.PI*2;
+    cyl(g,light,.014,.014,.88, Math.cos(a)*.185,0.52,Math.sin(a)*.185, 0,0,a+Math.PI/2);
+  }
+
+  // Rounded ends
+  sph(g,skin, .18,.14,.18, 0,.98,0);
+  sph(g,tip,  .16,.12,.16, 0,.09,0);
+
+  // Flower end details
+  for(let i=0;i<6;i++){
+    const a=i/6*Math.PI*2;
+    sph(g,seed,.030,.024,.024, Math.cos(a)*.07,.07,Math.sin(a)*.07);
+  }
+  cyl(g,dark,.06,.06,.03, 0,.07,0); // center button
+
+  // Slight tilt — as if lying on a surface
+  g.rotation.z=.26;
+  g.rotation.y=.3;
+}
+
+// ─────────────────────────────────────────────────────
+// ORIENTATION
+// ─────────────────────────────────────────────────────
+let yaw=0,pitch=0,hasGyro=false;
+let gyroA=0,gyroB=90,gyroG=0;
+let tx=0,ty=0;
+const eu=new THREE.Euler(0,0,0,'YXZ');
+
+window.addEventListener('deviceorientation',e=>{
+  if(e.alpha!=null){gyroA=e.alpha||0;gyroB=e.beta||90;gyroG=e.gamma||0;hasGyro=true;}
 });
-document.addEventListener('touchstart', e=>{
-  if(e.target.tagName==='BUTTON') return;
-  tx=e.touches[0].clientX; ty=e.touches[0].clientY;
+document.addEventListener('touchstart',e=>{
+  if(e.target.tagName==='BUTTON')return;
+  tx=e.touches[0].clientX;ty=e.touches[0].clientY;
 },{passive:true});
-document.addEventListener('touchmove', e=>{
-  if(hasGyro) return;
-  yaw  -= (e.touches[0].clientX-tx)*.005;
-  pitch -= (e.touches[0].clientY-ty)*.004;
+document.addEventListener('touchmove',e=>{
+  if(hasGyro)return;
+  yaw-=(e.touches[0].clientX-tx)*.005;
+  pitch-=(e.touches[0].clientY-ty)*.004;
   pitch=Math.max(-1.1,Math.min(1.1,pitch));
-  tx=e.touches[0].clientX; ty=e.touches[0].clientY;
+  tx=e.touches[0].clientX;ty=e.touches[0].clientY;
 },{passive:true});
 let md=false,mx2=0,my2=0;
-document.addEventListener('mousedown',e=>{ if(e.target.tagName!=='BUTTON'){md=true;mx2=e.clientX;my2=e.clientY;} });
+document.addEventListener('mousedown',e=>{if(e.target.tagName!=='BUTTON'){md=true;mx2=e.clientX;my2=e.clientY;}});
 document.addEventListener('mouseup',()=>md=false);
 document.addEventListener('mousemove',e=>{
   if(!md)return;
-  yaw-=(e.clientX-mx2)*.005; pitch-=(e.clientY-my2)*.004;
+  yaw-=(e.clientX-mx2)*.005;pitch-=(e.clientY-my2)*.004;
   pitch=Math.max(-1.1,Math.min(1.1,pitch));
-  mx2=e.clientX; my2=e.clientY;
+  mx2=e.clientX;my2=e.clientY;
 });
 
 function applyOri(cam){
   if(hasGyro){
-    eu.set(THREE.MathUtils.degToRad(gyroB-90), -THREE.MathUtils.degToRad(gyroA), -THREE.MathUtils.degToRad(gyroG),'YXZ');
+    eu.set(THREE.MathUtils.degToRad(gyroB-90),-THREE.MathUtils.degToRad(gyroA),-THREE.MathUtils.degToRad(gyroG),'YXZ');
   } else {
     eu.set(pitch,yaw,0,'YXZ');
   }
   cam.quaternion.setFromEuler(eu);
 }
 
-// ══════════════════════════════════════════════
-// FIND NEAREST IN VIEW
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
+// NEAREST IN VIEW
+// ─────────────────────────────────────────────────────
 const camDir=new THREE.Vector3();
 const toZ=new THREE.Vector3();
 function updateNearest(){
   camL.getWorldDirection(camDir);
-  let bestS=-1, best=null;
+  let bestS=-1,best=null;
   ZONES.forEach(z=>{
-    if(found.has(z.def.id)||!z.mesh) return;
+    if(found.has(z.def.id)||!z.mesh)return;
     toZ.set(z.x-camL.position.x,0,z.z-camL.position.z);
-    const d=toZ.length(); if(d>7)return;
+    const d=toZ.length();if(d>7)return;
     toZ.normalize();
     const flat=new THREE.Vector3(camDir.x,0,camDir.z).normalize();
     const sc=flat.dot(toZ)-d*.03;
     if(sc>bestS){bestS=sc;best=z;}
   });
-  nearZone=bestS>0.35?best:null;
+  nearZone=bestS>0.3?best:null;
 
   const btn=document.getElementById('catchBtn');
   const hint=document.getElementById('hint');
   if(nearZone){
     const d=Math.sqrt((nearZone.x-camL.position.x)**2+(nearZone.z-camL.position.z)**2);
-    btn.style.display = d<2.8?'block':'none';
-    hint.textContent = d<2.8
-      ? `🎯 ${nearZone.def.he} – ${nearZone.def.room}!`
-      : `👀 ${nearZone.def.he} – ${nearZone.def.room}`;
+    btn.style.display=d<3.0?'block':'none';
+    hint.textContent=d<3.0
+      ? `🎯 ${nearZone.def.he} — ${nearZone.def.room}!`
+      : `👀 ${nearZone.def.he} — ${nearZone.def.room}`;
   } else {
     btn.style.display='none';
     const rem=ZONES.filter(z=>!found.has(z.def.id));
     if(rem.length){
       const pick=rem[Math.floor(Date.now()/5000)%rem.length];
-      hint.textContent=`🔍 חַפֵּשׂ אֶת הַ${pick.def.he} – ${pick.def.room}`;
+      hint.textContent=`🔍 חַפֵּשׂ אֶת הַ${pick.def.he} — ${pick.def.room}`;
     } else {
-      hint.textContent='✅ מָצָאתָ הַכֹּל!';
+      hint.textContent='✅ מָצָאתָ הַכֹּל! יְפֵה מְאֹד!';
     }
   }
 }
 
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
 // CATCH
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
 function catchIt(){
   if(!nearZone||found.has(nearZone.def.id))return;
   const def=nearZone.def;
   found.add(def.id);
   score+=def.pts;
   document.getElementById('scoreVal').textContent=score;
-
-  const obj=nearZone.mesh; let t=0;
-  const iv=setInterval(()=>{
-    t+=.07; const s=1+t*.7; obj.scale.set(s,s,s);
-    if(t>=1){clearInterval(iv);obj.visible=false;}
-  },20);
-
+  const obj=nearZone.mesh;let t=0;
+  const iv=setInterval(()=>{t+=.07;const s=1+t*.8;obj.scale.set(s,s,s);if(t>=1){clearInterval(iv);obj.visible=false;}},22);
   const emojis=[...found].map(id=>DEFS.find(d=>d.id===id)?.emoji).join('');
   document.getElementById('foundBox').textContent=emojis+'  '+(DEFS.length-found.size)+' נוֹתָרוּ';
-
   document.getElementById('popEmoji').textContent=def.emoji;
   document.getElementById('popName').textContent=def.he+'!';
-  document.getElementById('popMsg').textContent=`מָצָאתָ ${def.he}\nב${def.room}!\n+${def.pts} ⭐`;
+  document.getElementById('popMsg').textContent=`מָצָאתָ אֶת הַ${def.he}\nב${def.room}!\n+${def.pts} ⭐`;
   document.getElementById('popup').style.display='flex';
   document.getElementById('catchBtn').style.display='none';
   if(found.size>=DEFS.length) setTimeout(showWin,1600);
 }
-function closePopup(){ document.getElementById('popup').style.display='none'; }
+function closePopup(){document.getElementById('popup').style.display='none';}
 function showWin(){
   closePopup();
-  document.getElementById('winMsg').textContent=`מָצָאתָ אֶת כׇּל ${DEFS.length} הַיְּצוּרִים!\nסַךְ הַכֹּל: ${score} ⭐`;
+  document.getElementById('winMsg').textContent=`מָצָאתָ אֶת כׇּל ${DEFS.length} הַיְּצוּרִים!\nסַךְ הַכֹּל: ${score} ⭐\nכׇּל הַכָּבוֹד! 🌟`;
   document.getElementById('win').style.display='flex';
 }
 function resetGame(){
-  found.clear(); score=0;
+  found.clear();score=0;
   document.getElementById('scoreVal').textContent='0';
-  document.getElementById('foundBox').textContent='0 / 12 נִמְצְאוּ';
+  document.getElementById('foundBox').textContent='0 / 6 נִמְצְאוּ';
   document.getElementById('win').style.display='none';
-  ZONES.forEach(z=>{ if(z.mesh){z.mesh.visible=true;z.mesh.scale.set(1,1,1);} });
+  ZONES.forEach(z=>{if(z.mesh){z.mesh.visible=true;z.mesh.scale.set(1,1,1);}});
 }
 
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
 // VR
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
 function toggleVR(){
   vrMode=!vrMode;
   document.body.classList.toggle('vr',vrMode);
   document.getElementById('vrBtn').textContent=vrMode?'📱 רָגִיל':'📦 קַרְדְּבּוֹרְד';
   const s=document.getElementById('videoBg').srcObject;
-  if(vrMode&&s){ document.getElementById('vrVL').srcObject=s; document.getElementById('vrVR').srcObject=s; }
+  if(vrMode&&s){document.getElementById('vrVL').srcObject=s;document.getElementById('vrVR').srcObject=s;}
   onResize();
 }
 
-// ══════════════════════════════════════════════
-// ANIMATE
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
+// RENDER LOOP
+// ─────────────────────────────────────────────────────
 let frame=0;
 function animate(){
   requestAnimationFrame(animate);
   frame++;
-
-  // Gentle bob & slow rotation on all visible creatures
   ZONES.forEach((z,i)=>{
     if(!z.mesh||!z.mesh.visible)return;
-    z.mesh.position.y = z.y + Math.sin(frame*.026+i*1.05)*.055;
-    z.mesh.rotation.y += .007;
+    z.mesh.position.y=z.y+Math.sin(frame*.024+i*1.05)*.05;
+    z.mesh.rotation.y+=.006;
   });
-
   applyOri(camL);
-  if(frame%8===0) updateNearest();
-
+  if(frame%8===0)updateNearest();
   renderer.clear();
   if(vrMode){
     const W=window.innerWidth,H=window.innerHeight;
-    camL.aspect=(W/2)/H; camL.updateProjectionMatrix();
-    renderer.setViewport(0,0,W/2,H); renderer.setScissor(0,0,W/2,H);
-    renderer.setScissorTest(true); renderer.render(scene,camL);
+    camL.aspect=(W/2)/H;camL.updateProjectionMatrix();
+    renderer.setViewport(0,0,W/2,H);renderer.setScissor(0,0,W/2,H);
+    renderer.setScissorTest(true);renderer.render(scene,camL);
     camR.quaternion.copy(camL.quaternion);
-    camR.position.set(camL.position.x+.034,camL.position.y,camL.position.z);
-    camR.aspect=(W/2)/H; camR.updateProjectionMatrix();
-    renderer.setViewport(W/2,0,W/2,H); renderer.setScissor(W/2,0,W/2,H);
+    camR.position.set(camL.position.x+.034,1.5,camL.position.z);
+    camR.aspect=(W/2)/H;camR.updateProjectionMatrix();
+    renderer.setViewport(W/2,0,W/2,H);renderer.setScissor(W/2,0,W/2,H);
     renderer.render(scene,camR);
     renderer.setScissorTest(false);
   } else {
-    camL.aspect=window.innerWidth/window.innerHeight; camL.updateProjectionMatrix();
+    camL.aspect=window.innerWidth/window.innerHeight;camL.updateProjectionMatrix();
     renderer.setViewport(0,0,window.innerWidth,window.innerHeight);
     renderer.render(scene,camL);
   }
 }
-
 function onResize(){
   renderer.setSize(window.innerWidth,window.innerHeight);
-  if(!vrMode){ camL.aspect=window.innerWidth/window.innerHeight; camL.updateProjectionMatrix(); }
+  if(!vrMode){camL.aspect=window.innerWidth/window.innerHeight;camL.updateProjectionMatrix();}
 }
 
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
 // START
-// ══════════════════════════════════════════════
+// ─────────────────────────────────────────────────────
 async function startGame(){
   document.getElementById('loading').style.display='none';
   try {
@@ -777,13 +803,9 @@ async function startGame(){
   }
   if(typeof DeviceOrientationEvent!=='undefined'&&
      typeof DeviceOrientationEvent.requestPermission==='function'){
-    try{ await DeviceOrientationEvent.requestPermission(); }catch(e){}
+    try{await DeviceOrientationEvent.requestPermission();}catch(e){}
   }
   initThree();
-  // Show drag hint on non-gyro devices
-  setTimeout(()=>{
-    if(!hasGyro){ document.getElementById('dragHint').style.display='block'; }
-  },1800);
 }
 </script>
 </body>
