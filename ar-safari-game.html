@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🦒 Safari AR Adventure</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<title>🦒 ספארי AR</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:#000; overflow:hidden; font-family:'Fredoka One',sans-serif; touch-action:none; }
+body { background:#000; overflow:hidden; font-family:'David Libre','Frank Ruhl Libre',serif; touch-action:none; }
 
 #videoBg {
   position:fixed; inset:0; width:100%; height:100%;
@@ -23,38 +22,33 @@ body { background:#000; overflow:hidden; font-family:'Fredoka One',sans-serif; t
 }
 
 /* VR */
-body.vr-mode #videoBg { display:none; }
-#vrLeft,#vrRight {
-  display:none; position:fixed; top:0; width:50%; height:100%;
-  overflow:hidden; z-index:0;
+body.vr #videoBg { display:none; }
+#vrL,#vrR {
+  display:none; position:fixed; top:0; width:50%; height:100%; overflow:hidden; z-index:0;
 }
-#vrLeft { left:0; } #vrRight { right:0; }
-#vrLeft video  { width:200%; height:100%; object-fit:cover; }
-#vrRight video { width:200%; height:100%; object-fit:cover; margin-left:-100%; }
-body.vr-mode #vrLeft,
-body.vr-mode #vrRight { display:block; }
-#vrDivider {
-  display:none; position:fixed; left:50%; top:0; bottom:0;
-  width:4px; background:#000; z-index:9; transform:translateX(-50%);
-}
-body.vr-mode #vrDivider { display:block; }
+#vrL { left:0; } #vrR { right:0; }
+#vrL video, #vrR video { width:200%; height:100%; object-fit:cover; }
+#vrR video { margin-left:-100%; }
+body.vr #vrL, body.vr #vrR { display:block; }
+#vrLine { display:none; position:fixed; left:50%; top:0; bottom:0; width:4px; background:#000; z-index:9; transform:translateX(-50%); }
+body.vr #vrLine { display:block; }
 
 /* LOADING */
 #loading {
   position:fixed; inset:0;
-  background:linear-gradient(135deg,#0d1b2a,#1b2a3a,#162032);
+  background:linear-gradient(135deg,#0d1b2a,#1b2a3a);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   z-index:200; color:#fff; text-align:center; padding:2rem;
 }
-#loading .critters { font-size:3.5rem; margin-bottom:.8rem; animation:hop 1.4s infinite; }
+#loading .emojis { font-size:3.5rem; margin-bottom:.8rem; animation:hop 1.3s infinite; }
 @keyframes hop { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-#loading h1 { font-size:2.6rem; color:#ffd54f; text-shadow:0 0 24px rgba(255,200,0,.7); margin-bottom:.3rem; }
-#loading p  { font-size:1rem; color:#aad4f5; line-height:1.6; max-width:300px; margin:.35rem auto; }
+#loading h1 { font-size:2.8rem; color:#ffd54f; margin-bottom:.5rem; }
+#loading p  { font-size:1.1rem; color:#aad4f5; line-height:1.7; max-width:300px; margin:.3rem auto; }
 #startBtn {
   margin-top:1.5rem;
   background:linear-gradient(135deg,#f9a825,#e65100);
   border:none; border-radius:50px; padding:1rem 2.8rem;
-  font-size:1.5rem; font-family:'Fredoka One',sans-serif;
+  font-size:1.5rem; font-family:inherit;
   color:#fff; cursor:pointer; animation:pulse 2s infinite;
 }
 @keyframes pulse {
@@ -69,75 +63,57 @@ body.vr-mode #vrDivider { display:block; }
   pointer-events:none;
 }
 .pill {
-  background:rgba(0,0,0,.62); border-radius:20px; padding:.4rem .9rem;
-  color:#fff; font-size:1rem; border:1.5px solid rgba(255,220,0,.45);
+  background:rgba(0,0,0,.65); border-radius:20px; padding:.4rem 1rem;
+  color:#fff; font-size:1.1rem; border:1.5px solid rgba(255,220,0,.5);
   backdrop-filter:blur(8px);
 }
-#found-box { color:#7ef; border-color:rgba(100,220,255,.35); max-width:55vw; text-align:right; }
 
 /* BOTTOM BAR */
-#bottomBar {
+#bar {
   position:fixed; bottom:0; left:0; right:0; z-index:10;
   padding:.7rem 1rem 1.1rem;
   display:flex; align-items:center; justify-content:space-between; gap:.5rem;
-  background:rgba(0,0,0,.48); backdrop-filter:blur(10px);
-  border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(0,0,0,.52); backdrop-filter:blur(10px);
+  border-top:1px solid rgba(255,255,255,.1);
 }
-#hint-text {
-  flex:1; color:#fff; font-size:.9rem; text-align:center; line-height:1.35;
-  padding:0 .4rem;
+#hint {
+  flex:1; color:#fff; font-size:1rem; text-align:center; line-height:1.4; padding:0 .3rem;
 }
 #catchBtn {
   background:linear-gradient(135deg,#43a047,#1b5e20);
   border:none; border-radius:50px; padding:.7rem 1.3rem;
-  font-size:1.05rem; font-family:'Fredoka One',sans-serif;
+  font-size:1.1rem; font-family:inherit;
   color:#fff; cursor:pointer; white-space:nowrap;
   box-shadow:0 3px 16px rgba(67,160,71,.55); display:none; pointer-events:all;
   animation:glow .9s infinite alternate;
 }
 @keyframes glow { from{box-shadow:0 3px 14px rgba(67,160,71,.5)} to{box-shadow:0 3px 28px rgba(67,160,71,.95)} }
 #vrBtn {
-  background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.3);
-  border-radius:50px; padding:.5rem .95rem;
-  font-size:.95rem; font-family:'Fredoka One',sans-serif;
+  background:rgba(255,255,255,.12); border:1.5px solid rgba(255,255,255,.3);
+  border-radius:50px; padding:.5rem .9rem;
+  font-size:.95rem; font-family:inherit;
   color:#fff; cursor:pointer; white-space:nowrap; pointer-events:all; flex-shrink:0;
-}
-
-/* REVEAL RING – shown on screen when approaching a creature zone */
-#revealRing {
-  position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:120px; height:120px; border-radius:50%;
-  border:4px solid rgba(255,220,0,0); z-index:8; pointer-events:none;
-  transition:border-color .3s, transform .3s;
-}
-#revealRing.active {
-  border-color:rgba(255,220,0,.85);
-  animation:ring 1s infinite;
-}
-@keyframes ring {
-  0%{transform:translate(-50%,-50%) scale(1);opacity:1}
-  100%{transform:translate(-50%,-50%) scale(1.5);opacity:0}
 }
 
 /* POPUP */
 #popup {
   position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-  z-index:50; background:rgba(0,0,0,.55);
+  z-index:50; background:rgba(0,0,0,.6);
 }
-#popup-inner {
+#popBox {
   background:linear-gradient(135deg,#1a237e,#283593);
   border-radius:24px; padding:2rem 1.5rem; text-align:center; color:#fff;
   border:3px solid rgba(255,200,0,.7); max-width:300px; width:88vw;
   animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);
 }
-@keyframes popIn { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
-#popup-emoji { font-size:5rem; }
-#popup-name  { font-size:2rem; color:#ffd54f; margin:.3rem 0; }
-#popup-msg   { font-size:.95rem; color:#b3e5fc; margin-bottom:1.2rem; }
-.pop-btn {
+@keyframes popIn { from{transform:scale(.4);opacity:0} to{transform:scale(1);opacity:1} }
+#popEmoji { font-size:5rem; }
+#popName  { font-size:2rem; color:#ffd54f; margin:.3rem 0; }
+#popMsg   { font-size:1rem; color:#b3e5fc; margin-bottom:1.2rem; line-height:1.5; }
+.pbtn {
   background:linear-gradient(135deg,#f9a825,#e65100);
   border:none; border-radius:50px; padding:.7rem 1.8rem;
-  font-size:1.2rem; font-family:'Fredoka One',sans-serif; color:#fff; cursor:pointer;
+  font-size:1.2rem; font-family:inherit; color:#fff; cursor:pointer;
 }
 
 /* WIN */
@@ -148,787 +124,627 @@ body.vr-mode #vrDivider { display:block; }
   z-index:60; color:#fff; text-align:center; padding:2rem;
 }
 #win h1 { font-size:3rem; color:#ffd54f; }
-#win p  { font-size:1.1rem; color:#b3e5fc; margin:1rem 0 2rem; }
+#win p  { font-size:1.2rem; color:#b3e5fc; margin:1rem 0 2rem; line-height:1.6; }
+
+/* DRAG HINT */
+#dragHint {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  color:rgba(255,255,255,.7); font-size:1rem; z-index:8; pointer-events:none;
+  text-align:center; display:none;
+}
 </style>
 </head>
 <body>
 
 <video id="videoBg" autoplay playsinline muted></video>
 <div id="noCamBg"></div>
-<div id="vrLeft"><video id="vrVidL" autoplay playsinline muted></video></div>
-<div id="vrRight"><video id="vrVidR" autoplay playsinline muted></video></div>
-<div id="vrDivider"></div>
+<div id="vrL"><video id="vrVL" autoplay playsinline muted></video></div>
+<div id="vrR"><video id="vrVR" autoplay playsinline muted></video></div>
+<div id="vrLine"></div>
 <canvas id="gameCanvas"></canvas>
 
 <!-- LOADING -->
 <div id="loading">
-  <div class="critters">🦒🐘🐵🦘🐻🍎🥒🍌</div>
-  <h1>Safari AR!</h1>
-  <p>Animals & giant fruits are hiding in every room of your home 🏠</p>
-  <p style="color:#ffd54f;font-size:.9rem">📱 Walk room to room —<br>when you get close, they appear!</p>
-  <button id="startBtn" onclick="startGame()">▶ Let's Go!</button>
-  <p style="font-size:.75rem;color:#4a6fa0;margin-top:.9rem">Allow camera when asked</p>
+  <div class="emojis">🦒🐘🐵🦘🐻🍎🥒🍌</div>
+  <h1>סַפָּארִי AR!</h1>
+  <p>חַיּוֹת וּפֵרוֹת עֲנָקִיִּים<br>מִסְתַּתְּרִים בַּבַּיִת שֶׁלָּנוּ! 🏠</p>
+  <p style="color:#ffd54f;font-size:.95rem">📱 הַסְּתוֹבֵב עִם הַטֵּלֵפוֹן<br>וְחַפֵּשׂ אוֹתָם!</p>
+  <button id="startBtn" onclick="startGame()">▶ יַאלָּה נִמְצָא!</button>
+  <p style="font-size:.8rem;color:#4a6fa0;margin-top:.9rem">אַפְשֵׁר גִּישָׁה לַמַּצְלֵמָה</p>
 </div>
 
 <!-- HUD -->
 <div id="hud">
   <div class="pill">⭐ <span id="scoreVal">0</span></div>
-  <div class="pill" id="found-box">0 / 12 found</div>
+  <div class="pill" id="foundBox">0 / 12 נִמְצְאוּ</div>
 </div>
-
-<!-- REVEAL RING -->
-<div id="revealRing"></div>
 
 <!-- BOTTOM BAR -->
-<div id="bottomBar">
-  <button id="vrBtn" onclick="toggleVR()">📦 Cardboard</button>
-  <span id="hint-text">Walk into each room to find creatures!</span>
-  <button id="catchBtn" onclick="catchIt()">🤚 Catch!</button>
+<div id="bar">
+  <button id="vrBtn" onclick="toggleVR()">📦 קַרְדְּבּוֹרְד</button>
+  <span id="hint">סוֹבֵב אֶת הַטֵּלֵפוֹן לְכׇל הַצְּדָדִים!</span>
+  <button id="catchBtn" onclick="catchIt()">🤚 תָּפַסְתִּי!</button>
 </div>
+
+<div id="dragHint">← גְּרֹר לְהִסְתּוֹבֵב →</div>
 
 <!-- POPUP -->
 <div id="popup">
-  <div id="popup-inner">
-    <div id="popup-emoji">🦒</div>
-    <div id="popup-name">Giraffe!</div>
-    <div id="popup-msg"></div>
-    <button class="pop-btn" onclick="closePopup()">Keep Exploring! 🗺</button>
+  <div id="popBox">
+    <div id="popEmoji">🦒</div>
+    <div id="popName"></div>
+    <div id="popMsg"></div>
+    <button class="pbtn" onclick="closePopup()">הַמְשֵׁךְ לְחַפֵּשׂ! 🗺</button>
   </div>
 </div>
 
 <!-- WIN -->
 <div id="win">
   <div style="font-size:4rem">🏆🎉🌟</div>
-  <h1>You Win!</h1>
-  <p id="win-msg"></p>
-  <button class="pop-btn" onclick="resetGame()">Play Again 🔄</button>
+  <h1>כׇּל הַכָּבוֹד!</h1>
+  <p id="winMsg"></p>
+  <button class="pbtn" onclick="resetGame()">שְׂחַק שׁוּב! 🔄</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ═══════════════════════════════════════════════════════
-// CREATURE DEFINITIONS — one per zone, spread far apart
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// CREATURES — Hebrew with nikud
+// ══════════════════════════════════════════════
 const DEFS = [
-  {id:'giraffe',  emoji:'🦒', name:'Giraffe',    color:0xE8A838, accent:0x7A4A1A, room:'Living Room',  pts:10, height:0},
-  {id:'elephant', emoji:'🐘', name:'Elephant',   color:0x8A8FA8, accent:0x5A5F78, room:'Kitchen',      pts:10, height:0},
-  {id:'monkey',   emoji:'🐵', name:'Monkey',     color:0x9C7248, accent:0xF5D5A0, room:'Bathroom',     pts:10, height:0},
-  {id:'kangaroo', emoji:'🦘', name:'Kangaroo',   color:0xC28A55, accent:0x8A5A28, room:'Bedroom',      pts:10, height:0},
-  {id:'winnie',   emoji:'🐻', name:'Winnie Pooh',color:0xE0AE30, accent:0xCC2200, room:'Hallway',      pts:10, height:0},
-  {id:'chase',    emoji:'🐕', name:'Chase',      color:0xB8733A, accent:0x1a44cc, room:'Study Room',   pts:10, height:0},
-  {id:'apple',    emoji:'🍎', name:'Giant Apple', color:0xDD2020, accent:0x228B22, room:'Dining Table', pts:5,  height:0.55},
-  {id:'orange',   emoji:'🍊', name:'Giant Orange',color:0xFF8000, accent:0x228B22, room:'Kitchen Counter',pts:5,height:0.55},
-  {id:'tomato',   emoji:'🍅', name:'Giant Tomato',color:0xFF3800, accent:0x228B22, room:'Windowsill',   pts:5,  height:0.55},
-  {id:'cucumber', emoji:'🥒', name:'Cucumber',   color:0x2E8B22, accent:0x1A5C14, room:'on the Sofa',  pts:5,  height:0.45},
-  {id:'banana',   emoji:'🍌', name:'Banana',     color:0xFFE135, accent:0xA89000, room:'Coffee Table',  pts:5,  height:0.5},
-  {id:'skye',     emoji:'🦺', name:'Skye',       color:0xF0A0C0, accent:0xFF1493, room:'Kids Room',    pts:10, height:0},
+  {id:'giraffe',  emoji:'🦒', he:'גִּירָפָה',   room:'סָלוֹן',       pts:10, floorY:0,    color:0xE8A838, accent:0x7A3A0A},
+  {id:'elephant', emoji:'🐘', he:'פִּיל',       room:'מִטְבָּח',     pts:10, floorY:0,    color:0x8A8FA8, accent:0x5A5F78},
+  {id:'monkey',   emoji:'🐵', he:'קּוֹף',       room:'שֵׁרוּתִים',   pts:10, floorY:0,    color:0x9C7248, accent:0xF5D5A0},
+  {id:'kangaroo', emoji:'🦘', he:'קֶנְגּוּרוּ', room:'חֶדֶר שֵׁינָה', pts:10, floorY:0,   color:0xC28A55, accent:0x8A5A28},
+  {id:'winnie',   emoji:'🐻', he:'פּוּ הַדֻּב',  room:'מִסְדְּרוֹן',  pts:10, floorY:0,    color:0xE0AE30, accent:0xCC2200},
+  {id:'chase',    emoji:'🐕', he:'צֵ׳יס',       room:'חֶדֶר עֲבוֹדָה',pts:10,floorY:0,   color:0xB8733A, accent:0x1a44cc},
+  {id:'skye',     emoji:'🦺', he:'סְקַיי',      room:'חֶדֶר יְלָדִים',pts:10,floorY:0,   color:0xF0A0C0, accent:0xFF1493},
+  {id:'apple',    emoji:'🍎', he:'תַּפּוּחַ עָנָק', room:'עַל הַסַּפָּה',pts:5, floorY:.52, color:0xDD2020, accent:0x228B22},
+  {id:'orange',   emoji:'🍊', he:'תַּפּוּז עָנָק', room:'שֻׁלְחָן אֹכֶל',pts:5,floorY:.52, color:0xFF8000, accent:0x228B22},
+  {id:'tomato',   emoji:'🍅', he:'עַגְבָנִיָּה', room:'מִשְׁטַח מִטְבָּח',pts:5,floorY:.52,color:0xFF3800, accent:0x228B22},
+  {id:'cucumber', emoji:'🥒', he:'מְלָפְפוֹן',  room:'עַל הַסַּפָּה',  pts:5, floorY:.42, color:0x2E8B22, accent:0x1A5C14},
+  {id:'banana',   emoji:'🍌', he:'בָּנָנָה',    room:'שֻׁלְחָן קָפֶה', pts:5, floorY:.48, color:0xFFE135, accent:0xA89000},
 ];
 
-// ═══════════════════════════════════════════════════════
-// PLACE CREATURES IN ZONES — a wide ring, well separated
-// ═══════════════════════════════════════════════════════
-// Each zone is a 3D position. Player starts at origin.
-// Zones are in a large spread — 5 to 9 m away, different angles
-const ZONES = DEFS.map((d, i) => {
-  const angle = (i / DEFS.length) * Math.PI * 2 + 0.3;
-  const dist  = 5 + (i % 4) * 1.1;   // 5 – 8.3 m
+// ══════════════════════════════════════════════
+// PLACE CREATURES: visible ring, 2.5–4 m away
+// so they are ALWAYS visible when you look around
+// ══════════════════════════════════════════════
+const RADIUS_MIN = 2.5;
+const RADIUS_MAX = 3.8;
+const ZONES = DEFS.map((def, i) => {
+  const angle = (i / DEFS.length) * Math.PI * 2;
+  const r = RADIUS_MIN + (i % 3) * ((RADIUS_MAX - RADIUS_MIN) / 2);
   return {
-    x: Math.sin(angle) * dist,
-    y: d.height,                       // animals on floor, fruits on surface height
-    z: Math.cos(angle) * dist,
-    def: d,
-    revealed: false,
+    def,
+    x: Math.sin(angle) * r,
+    y: def.floorY,
+    z: Math.cos(angle) * r,
     mesh: null,
-    scale: 0,
   };
 });
 
-// ═══════════════════════════════════════════════════════
-// THREE.JS
-// ═══════════════════════════════════════════════════════
-let scene, renderer, camL, camR;
-let vrMode = false;
+// ══════════════════════════════════════════════
+// THREE.JS SETUP
+// ══════════════════════════════════════════════
+let scene, renderer, camL, camR, vrMode = false;
 let score = 0;
 const found = new Set();
 let nearZone = null;
-let activeReveal = null; // zone currently being revealed
 
 function initThree() {
   scene = new THREE.Scene();
-  // NO fog, NO helpers, NO grid
 
-  camL = new THREE.PerspectiveCamera(65, window.innerWidth/window.innerHeight, 0.05, 150);
-  camR = new THREE.PerspectiveCamera(65, (window.innerWidth/2)/window.innerHeight, 0.05, 150);
+  camL = new THREE.PerspectiveCamera(68, window.innerWidth/window.innerHeight, 0.05, 100);
+  camR = new THREE.PerspectiveCamera(68, (window.innerWidth/2)/window.innerHeight, 0.05, 100);
   camL.position.set(0, 1.5, 0);
-  camR.position.set(0, 1.5, 0);
 
-  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gameCanvas'), alpha:true, antialias:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('gameCanvas'),
+    alpha: true, antialias: true
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
   renderer.autoClear = false;
+  renderer.shadowMap.enabled = true;
 
-  // Rich lighting
-  scene.add(new THREE.AmbientLight(0xfff8e8, 0.8));
+  // Lighting
+  scene.add(new THREE.AmbientLight(0xfff8e8, 0.85));
   const sun = new THREE.DirectionalLight(0xfff5d0, 1.4);
-  sun.position.set(5, 10, 6); scene.add(sun);
+  sun.position.set(4, 9, 5); scene.add(sun);
   const fill = new THREE.DirectionalLight(0xc8dff8, 0.5);
-  fill.position.set(-5, 4, -7); scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xffd080, 0.3);
-  rim.position.set(0, -3, 5); scene.add(rim);
+  fill.position.set(-5, 4, -6); scene.add(fill);
+  const back = new THREE.DirectionalLight(0xffe0a0, 0.3);
+  back.position.set(0, -2, -5); scene.add(back);
 
-  // Build all meshes but start invisible / scale 0
+  // Build creatures — ALL VISIBLE from start
   ZONES.forEach(zone => {
-    const grp = buildCreature(zone.def);
-    grp.position.set(zone.x, zone.y, zone.z);
-    grp.lookAt(0, grp.position.y, 0);
-    grp.scale.set(0,0,0);   // hidden until reveal
-    grp.visible = true;
-    scene.add(grp);
-    zone.mesh = grp;
-    zone.def.group = grp;
+    const g = buildCreature(zone.def);
+    g.position.set(zone.x, zone.y, zone.z);
+    // Face toward player (origin)
+    g.lookAt(new THREE.Vector3(0, zone.y, 0));
+    scene.add(g);
+    zone.mesh = g;
   });
 
   window.addEventListener('resize', onResize);
   animate();
 }
 
-// ═══════════════════════════════════════════════════════
-// CREATURE BUILDERS — detailed, no labels
-// ═══════════════════════════════════════════════════════
-function m(color, rough=0.75, metal=0) {
+// ══════════════════════════════════════════════
+// MATERIAL HELPERS
+// ══════════════════════════════════════════════
+function mat(color, rough=0.72, metal=0.05) {
   return new THREE.MeshStandardMaterial({color, roughness:rough, metalness:metal});
 }
-function sphere(color, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
-  const mesh = new THREE.Mesh(new THREE.SphereGeometry(1,22,18), m(color));
-  mesh.scale.set(sx,sy,sz); mesh.position.set(px,py,pz);
-  mesh.rotation.set(rx,ry,rz); return mesh;
+function S(g, c, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1,20,16), mat(c));
+  m.scale.set(sx,sy,sz); m.position.set(px,py,pz); m.rotation.set(rx,ry,rz);
+  g.add(m); return m;
 }
-function cyl(color, rt,rb,h, px,py,pz, rx=0,ry=0,rz=0, seg=10) {
-  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg), m(color));
-  mesh.position.set(px,py,pz); mesh.rotation.set(rx,ry,rz); return mesh;
+function C(g, c, rt,rb,h, px,py,pz, rx=0,ry=0,rz=0, seg=10) {
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg), mat(c));
+  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz); g.add(m); return m;
 }
-function cone(color, r,h, px,py,pz, rx=0,ry=0,rz=0) {
-  const mesh = new THREE.Mesh(new THREE.ConeGeometry(r,h,10), m(color));
-  mesh.position.set(px,py,pz); mesh.rotation.set(rx,ry,rz); return mesh;
+function K(g, c, r,h, px,py,pz, rx=0,ry=0,rz=0) {
+  const m = new THREE.Mesh(new THREE.ConeGeometry(r,h,10), mat(c));
+  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz); g.add(m); return m;
 }
-function box(color, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
-  const mesh = new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz), m(color));
-  mesh.position.set(px,py,pz); mesh.rotation.set(rx,ry,rz); return mesh;
+function B(g, c, sx,sy,sz, px,py,pz, rx=0,ry=0,rz=0) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz), mat(c));
+  m.position.set(px,py,pz); m.rotation.set(rx,ry,rz); g.add(m); return m;
 }
-function torus(color, R,r,seg=12,tseg=18, px,py,pz, rx=0) {
-  const mesh = new THREE.Mesh(new THREE.TorusGeometry(R,r,seg,tseg), m(color));
-  mesh.position.set(px,py,pz); mesh.rotation.x=rx; return mesh;
+function T(g, c, R,r, px,py,pz, rx=Math.PI/2) {
+  const m = new THREE.Mesh(new THREE.TorusGeometry(R,r,10,20), mat(c));
+  m.position.set(px,py,pz); m.rotation.x=rx; g.add(m); return m;
 }
-function eyes(g, c, py, pz, sep=0.1) {
+function eyes2(g, py, pz, sep=0.1) {
   [-sep,sep].forEach(x => {
-    g.add(sphere(0xffffff, .055,.055,.04, x,py,pz));
-    g.add(sphere(0x111111, .032,.032,.032, x*.65,py,pz+.03));
-    g.add(sphere(0xffffff, .012,.012,.012, x*.65+.012,py+.01,pz+.042));
+    S(g,0xffffff, .06,.06,.045, x,py,pz);
+    S(g,0x111111, .035,.035,.035, x*.7,py,pz+.032);
+    S(g,0xffffff, .013,.013,.013, x*.7+.012,py+.01,pz+.046);
   });
 }
-function nostrils(g, c, py, pz, sep=0.055) {
-  [-sep,sep].forEach(x => g.add(sphere(0x3a1a0a,.03,.025,.02, x,py,pz)));
-}
-function addLegs(g, color, legY, legH, spreadX, spreadZ, knee=false) {
-  [[-spreadX,0,-spreadZ],[spreadX,0,-spreadZ],[-spreadX,0,spreadZ],[spreadX,0,spreadZ]]
-  .forEach(([lx,,lz]) => {
-    g.add(cyl(color,.072,.065,legH, lx,legY,lz));
-    // hoof
-    g.add(sphere(0x2a1a0a, .08,.055,.08, lx,legY-legH/2-.02,lz));
-  });
+function nostrils2(g, c, py, pz, sep=0.055) {
+  [-sep,sep].forEach(x => S(g,0x2a0a00,.032,.026,.022, x,py,pz));
 }
 
 function buildCreature(def) {
   const g = new THREE.Group();
-  const c = def.color, a = def.accent;
-  switch(def.id) {
-    case 'giraffe':   buildGiraffe(g,c,a); break;
-    case 'elephant':  buildElephant(g,c,a); break;
-    case 'monkey':    buildMonkey(g,c,a); break;
-    case 'kangaroo':  buildKangaroo(g,c,a); break;
-    case 'winnie':    buildWinnie(g,c,a); break;
-    case 'chase':     buildDog(g,c,a,'chase'); break;
-    case 'skye':      buildDog(g,c,a,'skye'); break;
-    case 'apple':     buildRoundFruit(g,c,a,false); break;
-    case 'orange':    buildRoundFruit(g,c,a,false,true); break;
-    case 'tomato':    buildRoundFruit(g,c,a,true); break;
-    case 'cucumber':  buildCucumber(g,c,a); break;
-    case 'banana':    buildBanana(g,c,a); break;
-  }
+  const c=def.color, a=def.accent;
+  ({
+    giraffe:  ()=>buildGiraffe(g,c,a),
+    elephant: ()=>buildElephant(g,c,a),
+    monkey:   ()=>buildMonkey(g,c,a),
+    kangaroo: ()=>buildKangaroo(g,c,a),
+    winnie:   ()=>buildWinnie(g,c,a),
+    chase:    ()=>buildDog(g,c,a,'chase'),
+    skye:     ()=>buildDog(g,c,a,'skye'),
+    apple:    ()=>buildSphere(g,c,a,'apple'),
+    orange:   ()=>buildSphere(g,c,a,'orange'),
+    tomato:   ()=>buildSphere(g,c,a,'tomato'),
+    cucumber: ()=>buildCucumber(g,c,a),
+    banana:   ()=>buildBanana(g,c,a),
+  }[def.id]||(() => {}))();
   return g;
 }
 
+// ══════════════════════════════════════════════════════
+// GIRAFFE — tall neck, spots, ossicones, mane
+// ══════════════════════════════════════════════════════
 function buildGiraffe(g,c,a) {
-  // Legs (long)
-  [[-0.18,0,-0.12],[0.18,0,-0.12],[-0.15,0,0.12],[0.15,0,0.12]].forEach(([x,,z]) => {
-    g.add(cyl(c,.072,.065,.68, x,.34,z));  // upper leg
-    g.add(cyl(a,.06,.055,.32, x,-.02,z));  // lower leg darker
-    g.add(sphere(0x1a0a00,.09,.06,.09, x,-.22,z)); // hoof
+  // 4 legs (long, two-tone)
+  [[-0.19,-.13],[0.19,-.13],[-0.16,.13],[0.16,.13]].forEach(([x,z])=>{
+    C(g,c,.075,.068,.56, x,.28,z);
+    C(g,a,.062,.058,.3, x,-.04,z);
+    S(g,0x1a0800,.09,.06,.09, x,-.22,z);
   });
   // Body
-  g.add(sphere(c, .38,.32,.28, 0,.78,0));
-  // Neck (tall)
-  g.add(cyl(c,.13,.18,.75, 0,1.22,0));
-  // Head
-  g.add(sphere(c, .24,.2,.22, 0,1.74,.1));
-  // Long snout
-  g.add(sphere(c,.16,.1,.18, 0,1.65,.32));
-  nostrils(g,a,1.6,.48,.05);
-  eyes(g,c,1.78,.28,.1);
-  // Ossicones (horns)
-  [-0.1,0.1].forEach(x => {
-    g.add(cyl(a,.025,.035,.18, x,1.93,.04));
-    g.add(sphere(a,.04,.04,.04, x,2.03,.04));
-  });
-  // Mane along neck
-  for(let i=0;i<5;i++) {
-    const t=i/4;
-    g.add(cone(a,.05,.18, 0,0.88+t*.36,-.12, -.3));
+  S(g,c, .4,.34,.3, 0,.78,0);
+  // Neck (long)
+  C(g,c,.12,.18,.82, 0,1.28,.04);
+  // Neck spots
+  for(let i=0;i<7;i++){
+    const ang=Math.random()*Math.PI*2, r=.14;
+    S(g,a,.08,.07,.04, Math.cos(ang)*r, .9+Math.random()*.7, Math.sin(ang)*r+.04);
   }
-  // Spots on body & neck
-  for(let i=0;i<14;i++) {
-    const ang=Math.random()*Math.PI*2, r=.34+Math.random()*.06;
-    const yy = .55+Math.random()*.9;
-    g.add(sphere(a,.09+Math.random()*.04,.07,.04, Math.cos(ang)*r,yy,Math.sin(ang)*r));
+  // Mane
+  for(let i=0;i<6;i++) K(g,a, .055,.2, 0, .88+i*.14, -.13, -.35,0,0);
+  // Head
+  S(g,c, .26,.21,.23, 0,1.8,.08);
+  // Long jaw
+  S(g,c, .18,.11,.2, 0,1.7,.35);
+  nostrils2(g,a,1.66,.5,.055);
+  eyes2(g,1.85,.3,.1);
+  // Ossicones
+  [-0.11,0.11].forEach(x=>{ C(g,a,.025,.038,.22, x,1.99,.05); S(g,a,.04,.04,.04, x,2.12,.05); });
+  // Body spots
+  for(let i=0;i<12;i++){
+    const ang=Math.random()*Math.PI*2, r=.36+Math.random()*.06;
+    S(g,a,.09+Math.random()*.03,.075,.04, Math.cos(ang)*r, .6+Math.random()*.38, Math.sin(ang)*r);
   }
   // Tail
-  g.add(cyl(c,.025,.02,.28, 0,.68,-.3, .6));
-  g.add(sphere(a,.05,.08,.05, 0,.54,-.44));
+  C(g,c,.025,.02,.3, 0,.68,-.32, .6);
+  S(g,a,.055,.1,.055, 0,.54,-.47);
 }
 
+// ══════════════════════════════════════════════════════
+// ELEPHANT — huge, detailed trunk, tusks, wrinkles
+// ══════════════════════════════════════════════════════
 function buildElephant(g,c,a) {
-  // Legs (thick)
-  [[-0.22,0,-0.14],[0.22,0,-0.14],[-0.2,0,0.14],[0.2,0,0.14]].forEach(([x,,z]) => {
-    g.add(cyl(c,.12,.1,.42, x,.21,z));
-    g.add(sphere(0x1a1a1a,.13,.07,.13, x,-.04,z));
+  [[-0.24,-.16],[0.24,-.16],[-0.22,.16],[0.22,.16]].forEach(([x,z])=>{
+    C(g,c,.13,.11,.44, x,.22,z);
+    C(g,a,.09,.085,.06, x,.0,z);  // ankle wrinkle
+    S(g,0x1a1a1a,.14,.07,.14, x,-.05,z);
   });
-  // Body (big)
-  g.add(sphere(c,.52,.48,.42, 0,.72,0));
+  // Big body
+  S(g,c, .56,.52,.45, 0,.76,0);
   // Neck
-  g.add(cyl(c,.22,.26,.18, 0,1.1,.08));
-  // Head (big domed)
-  g.add(sphere(c,.38,.35,.34, 0,1.38,.1));
+  C(g,c,.25,.28,.2, 0,1.15,.08);
+  // Head (domed)
+  S(g,c, .42,.4,.38, 0,1.44,.1);
+  S(g,c, .25,.2,.2, 0,1.72,.1);  // forehead dome
   // Big ears
-  [-1,1].forEach(s => {
-    g.add(sphere(c,.14,.44,.06, s*.52,1.38,.04)); // main ear
-    g.add(sphere(a,.11,.36,.04, s*.52,1.36,.06)); // inner ear pink
+  [-1,1].forEach(s=>{
+    S(g,c,  .16,.5,.07, s*.62,1.44,.06);
+    S(g,a,  .12,.4,.05, s*.62,1.42,.1);  // inner pink
   });
-  // Trunk (segmented curve)
-  for(let i=0;i<7;i++) {
-    const t=i/6;
-    const mesh=new THREE.Mesh(new THREE.SphereGeometry(.1-.015*t,10,8), m(c));
-    mesh.scale.set(1,.65,1);
-    mesh.position.set(0, 1.12-.18*t, .44+Math.sin(t*1.5)*.28);
-    g.add(mesh);
-    // wrinkle rings
-    if(i%2===0) g.add(cyl(a,.105-.015*t,.105-.015*t,.04, 0,1.12-.18*t,.44+Math.sin(t*1.5)*.28));
+  // Trunk (curved, segmented)
+  const trunkPts = [];
+  for(let i=0;i<=8;i++){
+    const t=i/8;
+    trunkPts.push(new THREE.Vector3(0, 1.22-.22*t, .5+Math.sin(t*1.8)*.32));
   }
+  for(let i=0;i<8;i++){
+    const p=trunkPts[i], q=trunkPts[i+1];
+    const mid=p.clone().add(q).multiplyScalar(.5);
+    const r=.11-.012*i;
+    S(g,c, r,r*.68,r, mid.x,mid.y,mid.z);
+    if(i%2===0) T(g,a, r+.01,.02, mid.x,mid.y,mid.z); // wrinkle ring
+  }
+  // Nostrils at tip
+  const tip=trunkPts[8];
+  [-0.05,0.05].forEach(x=>S(g,0x2a0a00,.035,.03,.025, tip.x+x,tip.y-.04,tip.z+.02));
   // Tusks
-  [-1,1].forEach(s => {
-    g.add(cyl(0xFFFBE6,.045,.025,.38, s*.14,1.22,.54, .35,0,s*.25));
-    g.add(sphere(0xFFFBE6,.028,.028,.028, s*.18+s*.14,1.2-.02,.88));
-  });
-  eyes(g,c,1.46,.42,.14);
-  // Head dome bump
-  g.add(sphere(c,.22,.18,.18, 0,1.7,.1));
+  [-1,1].forEach(s=>{ C(g,0xFFFBE6,.048,.028,.42, s*.16,1.24,.62, .38,0,s*.28); S(g,0xFFFBE6,.03,.03,.03, s*.22+s*.06,1.16,.98); });
+  eyes2(g,1.52,.44,.15);
   // Tail
-  g.add(cyl(c,.03,.02,.2, 0,.72,-.45, .5));
-  g.add(sphere(a,.06,.1,.06, 0,.62,-.6));
+  C(g,c,.03,.025,.24, 0,.72,-.48, .5); S(g,a,.07,.12,.07, 0,.6,-.63);
 }
 
+// ══════════════════════════════════════════════════════
+// MONKEY — expressive face, long tail, fingers
+// ══════════════════════════════════════════════════════
 function buildMonkey(g,c,a) {
-  [[-0.12,0,-0.1],[0.12,0,-0.1]].forEach(([x,,z])=>{
-    g.add(cyl(c,.07,.065,.34, x,.17,z));
-    g.add(sphere(0x1a0a00,.08,.06,.08, x,-.02,z));
+  [[-0.12,-.1],[0.12,-.1]].forEach(([x,z])=>{
+    C(g,c,.072,.065,.36, x,.18,z); S(g,0x1a0800,.082,.06,.082, x,-.02,z);
   });
   // Body
-  g.add(sphere(c,.3,.34,.28, 0,.54,0));
-  // Belly patch
-  g.add(sphere(a,.2,.22,.14, 0,.56,.22));
+  S(g,c, .32,.36,.3, 0,.56,0);
+  S(g,a, .22,.24,.16, 0,.58,.22); // belly
   // Arms
-  [-1,1].forEach(s => {
-    g.add(cyl(c,.06,.055,.38, s*.34,.58,0, 0,0,s*.8));
-    g.add(sphere(c,.09,.08,.09, s*.58,.46,0)); // hand
-    // fingers
-    for(let f=0;f<4;f++) {
-      const fa=(f/3-.5)*.5;
-      g.add(cyl(c,.022,.018,.1, s*.58+Math.cos(fa)*.08,.38+Math.sin(fa)*.04,Math.sin(f*.5)*.05, .2));
+  [-1,1].forEach(s=>{
+    C(g,c,.064,.058,.4, s*.36,.6,0, 0,0,s*.82);
+    S(g,c,.1,.09,.1, s*.62,.47,.04);
+    for(let f=0;f<4;f++){
+      const fa=(f/3-.5)*.55;
+      C(g,c,.024,.019,.12, s*.62+Math.cos(fa)*.09,.37+Math.sin(fa)*.05,Math.sin(f*.48)*.05, .2);
     }
   });
-  // Neck
-  g.add(cyl(c,.11,.13,.14, 0,.88,.06));
+  C(g,c,.12,.14,.15, 0,.9,.06);
   // Head
-  g.add(sphere(c,.26,.26,.24, 0,1.1,.06));
-  // Face patch
-  g.add(sphere(a,.2,.18,.1, 0,1.08,.25));
-  // Big ears
-  [-1,1].forEach(s => {
-    g.add(sphere(c,.12,.12,.07, s*.3,1.1,.02));
-    g.add(sphere(a,.08,.08,.05, s*.3,1.1,.05));
-  });
-  nostrils(g,a,1.04,.34,.05);
-  eyes(g,c,1.15,.3,.1);
-  // Brow ridge
-  g.add(sphere(0x5a3510,.26,.05,.1, 0,1.22,.24));
-  // Tail (curled)
-  for(let i=0;i<10;i++) {
-    const t=i/9;
-    const mesh=new THREE.Mesh(new THREE.SphereGeometry(.055-.008*t,8,8),m(c));
-    mesh.position.set(-.1-Math.sin(t*3)*.32,.44+t*.48,-.22-t*.06);
-    g.add(mesh);
+  S(g,c, .28,.28,.26, 0,1.14,.06);
+  S(g,a, .22,.19,.12, 0,1.12,.27); // muzzle
+  // Ears
+  [-1,1].forEach(s=>{ S(g,c,.13,.13,.08, s*.32,1.14,.02); S(g,a,.09,.09,.06, s*.32,1.14,.06); });
+  // Brow
+  S(g,0x5a3010, .28,.055,.1, 0,1.23,.26);
+  nostrils2(g,a,1.08,.37,.053);
+  eyes2(g,1.19,.3,.11);
+  // Tail curled
+  for(let i=0;i<12;i++){
+    const t=i/11;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(.062-.009*t,8,8),mat(c));
+    m.position.set(-.12-Math.sin(t*2.8)*.36, .46+t*.52, -.24-t*.05);
+    g.add(m);
   }
-  // Tail tip
-  g.add(sphere(a,.07,.07,.07, -.1-Math.sin(3)*.32,.44+.48,-.28));
+  S(g,a, .075,.075,.075, -.12-Math.sin(2.8)*.36, .46+.52, -.29);
 }
 
+// ══════════════════════════════════════════════════════
+// KANGAROO — big hind legs, pouch with baby
+// ══════════════════════════════════════════════════════
 function buildKangaroo(g,c,a) {
-  // Big hind legs
-  [-1,1].forEach(s => {
-    g.add(cyl(c,.1,.09,.52, s*.15,.28,0));         // upper
-    g.add(cyl(c,.08,.07,.4,  s*.14,.0,.18, .55));  // lower (forward)
-    g.add(sphere(0x1a0a00,.09,.06,.16, s*.14,-.2,.26)); // big foot
+  [-1,1].forEach(s=>{
+    C(g,c,.11,.1,.55, s*.16,.28,0);
+    C(g,c,.09,.08,.42, s*.15,-.02,.2, .55);
+    S(g,0x1a0800,.1,.065,.18, s*.15,-.22,.3);
   });
-  // Small front arms
-  [-1,1].forEach(s => g.add(cyl(c,.05,.045,.26, s*.28,.84,0, 0,0,s*.7)));
-  // Body (upright, large lower)
-  g.add(sphere(c,.32,.48,.28, 0,.72,0));
-  // Pouch
-  g.add(sphere(a,.2,.18,.12, 0,.62,.28));
-  // Baby in pouch (tiny head)
-  g.add(sphere(c,.1,.1,.1, 0,.76,.32));
-  g.add(sphere(c,.07,.07,.07, 0,.86,.34)); // baby head
-  eyes(g,0x3a2010,.89,.37,.03);
-  // Neck
-  g.add(cyl(c,.11,.13,.2, 0,1.08,.06));
-  // Head (long snout)
-  g.add(sphere(c,.22,.22,.2, 0,1.36,.06));
-  // Long muzzle
-  g.add(sphere(c,.14,.1,.22, 0,1.3,.28));
-  // Big ears
-  [-1,1].forEach(s => {
-    g.add(cyl(c,.05,.07,.3, s*.14,1.62,.02, 0,0,s*.1));
-    g.add(sphere(a,.04,.04,.04, s*.15,1.78,.02));
-  });
-  nostrils(g,a,1.28,.46,.05);
-  eyes(g,c,1.4,.28,.09);
-  // Heavy tail
-  g.add(cyl(c,.1,.07,.5, 0,.54,-.34, .55));
+  [-1,1].forEach(s=>{ C(g,c,.055,.05,.28, s*.3,.86,0, 0,0,s*.72); S(g,c,.082,.075,.082, s*.5,.74,.02); });
+  S(g,c, .34,.5,.3, 0,.74,0);
+  S(g,a, .22,.2,.14, 0,.64,.3); // pouch
+  S(g,c, .11,.12,.11, 0,.78,.34); // baby body
+  S(g,c, .08,.08,.08, 0,.9,.36); // baby head
+  eyes2(g,.92,.39,.03);
+  C(g,c,.12,.14,.22, 0,1.1,.06);
+  S(g,c, .24,.24,.22, 0,1.4,.06);
+  S(g,c, .16,.12,.25, 0,1.34,.3); // muzzle
+  [-1,1].forEach(s=>{ C(g,c,.055,.075,.32, s*.15,1.68,.02, 0,0,s*.1); S(g,a,.045,.045,.045, s*.16,1.85,.02); });
+  nostrils2(g,a,1.3,.5,.055);
+  eyes2(g,1.44,.3,.1);
+  C(g,c,.11,.08,.55, 0,.56,-.37, .55);
 }
 
+// ══════════════════════════════════════════════════════
+// WINNIE — chubby, red shirt, honey pot
+// ══════════════════════════════════════════════════════
 function buildWinnie(g,c,a) {
-  [[-0.15,0,-0.1],[0.15,0,-0.1],[-0.14,0,0.1],[0.14,0,0.1]].forEach(([x,,z])=>{
-    g.add(cyl(c,.08,.075,.3, x,.15,z));
-    g.add(sphere(c,.1,.07,.1, x,.0,z));
+  [[-0.16,-.1],[0.16,-.1],[-0.15,.1],[0.15,.1]].forEach(([x,z])=>{
+    C(g,c,.088,.082,.32, x,.16,z); S(g,c,.11,.075,.11, x,-.01,z);
   });
-  // Chubby body
-  g.add(sphere(c,.4,.42,.38, 0,.56,0));
-  // Red crop shirt
-  g.add(sphere(a,.38,.28,.36, 0,.6,.02));
-  // Arms (chunky)
-  [-1,1].forEach(s => {
-    g.add(sphere(c,.1,.1,.1, s*.46,.66,.04));
-    g.add(cyl(c,.085,.08,.3, s*.34,.68,.04, 0,0,s*.75));
-  });
-  // Neck
-  g.add(cyl(c,.14,.16,.12, 0,.98,.04));
-  // Big round head
-  g.add(sphere(c,.32,.32,.3, 0,1.24,.06));
-  // Muzzle
-  g.add(sphere(0xF5CBA7,.22,.16,.12, 0,1.18,.3));
-  // Nose
-  g.add(sphere(0x2a1010,.065,.05,.05, 0,1.26,.42));
-  // Round ears
-  [-1,1].forEach(s => {
-    g.add(sphere(c,.14,.14,.1, s*.3,1.5,.03));
-    g.add(sphere(a,.09,.09,.06, s*.3,1.5,.07)); // inner ear
-  });
-  eyes(g,c,1.3,.36,.13);
-  // Honey pot in hand
-  g.add(cyl(0xE8C84A,.09,.08,.18, .52,.54,.08));
-  g.add(sphere(0xE8C84A,.1,.06,.1, .52,.65,.08));
-  g.add(cyl(0xE8C84A,.05,.09,.06, .52,.45,.08));
+  S(g,c, .42,.44,.4, 0,.58,0);
+  S(g,a, .4,.3,.38, 0,.62,.02); // red shirt
+  [-1,1].forEach(s=>{ C(g,c,.09,.085,.32, s*.37,.7,.04, 0,0,s*.78); S(g,c,.11,.1,.11, s*.56,.56,.05); });
+  C(g,c,.15,.17,.14, 0,1.0,.05);
+  S(g,c, .34,.34,.32, 0,1.28,.06);
+  S(g,0xF5CBA7, .24,.18,.14, 0,1.22,.32); // muzzle
+  S(g,0x2a1010, .07,.056,.056, 0,1.3,.46); // nose
+  [-1,1].forEach(s=>{ S(g,c,.15,.15,.1, s*.32,1.54,.04); S(g,a,.1,.1,.07, s*.32,1.54,.09); });
+  eyes2(g,1.34,.38,.13);
+  // Honey pot
+  C(g,0xE8C84A,.092,.08,.2, .56,.56,.08); S(g,0xE8C84A,.1,.065,.1, .56,.68,.08);
+  C(g,0xE8C84A,.052,.092,.065, .56,.47,.08); S(g,0x4a3000,.06,.06,.06, .56,.44,.08);
 }
 
+// ══════════════════════════════════════════════════════
+// DOG (Chase / Skye) — PAW PATROL
+// ══════════════════════════════════════════════════════
 function buildDog(g,c,a,type) {
-  [[-0.12,0,-0.09],[0.12,0,-0.09],[-0.11,0,0.09],[0.11,0,0.09]].forEach(([x,,z])=>{
-    g.add(cyl(c,.065,.06,.28, x,.14,z));
-    g.add(sphere(0x1a0a00,.075,.055,.075, x,-.02,z));
+  [[-0.13,-.1],[0.13,-.1],[-0.12,.1],[0.12,.1]].forEach(([x,z])=>{
+    C(g,c,.07,.064,.3, x,.15,z); S(g,0x1a0800,.08,.057,.08, x,-.02,z);
   });
-  // Body
-  g.add(sphere(c,.3,.28,.26, 0,.46,0));
-  // Arms/front legs with paws
-  [-1,1].forEach(s => {
-    g.add(cyl(c,.06,.055,.24, s*.28,.52,0, 0,0,s*.6));
-    g.add(sphere(c,.08,.07,.08, s*.44,.44,.04));
-  });
-  // Neck
-  g.add(cyl(c,.12,.14,.16, 0,.76,.06));
-  // Collar
-  g.add(torus(a,.18,.045,10,16, 0,.74,.08, Math.PI/2));
-  // Badge
-  g.add(cyl(0xFFD700,.065,.065,.03, 0,.72,.26));
-  // Head
-  g.add(sphere(c,.26,.24,.24, 0,1.0,.08));
-  // Muzzle
-  const muzzleC = type==='chase'?0xF5D5A0:0xF8C8C8;
-  g.add(sphere(muzzleC,.16,.11,.12, 0,.96,.3));
-  g.add(sphere(0x222222,.045,.04,.04, 0,1.0,.42)); // nose
-  // Ears (floppy)
-  if(type==='chase') {
-    [-1,1].forEach(s => g.add(sphere(c,.1,.2,.07, s*.26,.96,-.06, 0,0,s*.3)));
+  S(g,c, .32,.3,.28, 0,.48,0);
+  [-1,1].forEach(s=>{ C(g,c,.065,.06,.26, s*.3,.54,0, 0,0,s*.65); S(g,c,.086,.078,.086, s*.47,.45,.04); });
+  C(g,c,.13,.15,.18, 0,.78,.06);
+  T(g,a, .2,.048, 0,.76,.1);  // collar
+  C(g,0xFFD700,.07,.07,.034, 0,.74,.28);  // badge
+  S(g,c, .28,.26,.26, 0,1.04,.08);
+  const mC = type==='chase'?0xF5D5A0:0xF8C0C8;
+  S(g,mC, .18,.12,.14, 0,1.0,.33); // muzzle
+  S(g,0x222222,.048,.043,.043, 0,1.04,.47); // nose
+  if(type==='chase'){
+    [-1,1].forEach(s=>S(g,c,.11,.22,.08, s*.28,1.0,-.06, 0,0,s*.3));
+    B(g,0x1155cc, .2,.18,.12, 0,.54,-.24);
   } else {
-    // Skye — pointed ears
-    [-1,1].forEach(s => {
-      g.add(cone(a,.09,.28, s*.24,1.2,.04, 0,0,s*.2));
-      g.add(cone(muzzleC,.06,.2, s*.24,1.2,.06, 0,0,s*.2));
-    });
+    [-1,1].forEach(s=>{ K(g,a,.1,.3, s*.26,1.24,.04, 0,0,s*.22); K(g,mC,.065,.22, s*.26,1.24,.06, 0,0,s*.22); });
+    B(g,0xff44aa, .18,.16,.12, 0,.54,-.24);
   }
-  eyes(g,c,1.04,.3,.1);
-  // Eyebrows
-  [-1,1].forEach(s => g.add(sphere(a,.07,.025,.02, s*.1,1.1,.3)));
-  // Tail (wagging)
-  g.add(cyl(c,.04,.03,.24, 0,.54,-.28, -.65));
-  g.add(sphere(c,.055,.055,.055, 0,.42,-.46));
-  // PAW PATROL backpack hint
-  if(type==='chase') g.add(box(0x1155cc,.18,.16,.1, 0,.52,-.22));
-  if(type==='skye')  g.add(box(0xff44aa,.16,.14,.1, 0,.52,-.22));
+  [-1,1].forEach(s=>S(g,a,.075,.026,.022, s*.1,1.14,.33)); // eyebrows
+  eyes2(g,1.08,.32,.11);
+  C(g,c,.042,.032,.26, 0,.56,-.32, -.68); S(g,c,.06,.06,.06, 0,.44,-.5);
 }
 
-function buildRoundFruit(g,c,a,isTomato=false, isOrange=false) {
-  // Main sphere
-  g.add(sphere(c,.46,.46,.46, 0,.52,0));
-  if(isOrange) {
-    // Orange peel bumps
-    for(let i=0;i<20;i++) {
-      const ang=Math.random()*Math.PI*2, b=Math.random()*Math.PI-.5;
-      g.add(sphere(c,.04,.04,.03, Math.cos(b)*Math.cos(ang)*.46,
-        .52+Math.cos(b)*Math.sin(ang)*.46, Math.sin(b)*.46));
+// ══════════════════════════════════════════════════════
+// FRUITS
+// ══════════════════════════════════════════════════════
+function buildSphere(g,c,a,type) {
+  S(g,c, .48,.48,.48, 0,.54,0);
+  if(type==='orange'){
+    for(let i=0;i<22;i++){
+      const ang=Math.random()*Math.PI*2, b=(Math.random()-.5)*Math.PI*.8;
+      S(g,c,.042,.042,.03, Math.cos(b)*Math.cos(ang)*.48,.54+Math.cos(b)*Math.sin(ang)*.48,Math.sin(b)*.48);
     }
-    // Navel
-    g.add(sphere(0x8B4513,.06,.04,.06, 0,.07,0));
+    S(g,0x8B4513, .065,.045,.065, 0,.1,0);
   }
-  if(isTomato) {
-    // Tomato crown
-    for(let i=0;i<5;i++) {
+  if(type==='tomato'){
+    for(let i=0;i<5;i++){
       const a2=i/5*Math.PI*2;
-      g.add(sphere(0x2a6b10,.1,.06,.03, Math.cos(a2)*.14,.99,Math.sin(a2)*.14));
+      S(g,0x2a6b10,.11,.065,.034, Math.cos(a2)*.15,1.02,Math.sin(a2)*.15);
     }
-    // Ribbing
-    for(let i=0;i<5;i++) {
+    for(let i=0;i<5;i++){
       const a2=i/5*Math.PI*2;
-      g.add(cyl(0xCC2e00,.01,.01,.7, Math.cos(a2)*.44,.52,Math.sin(a2)*.44, 0,0,a2+Math.PI/2));
+      C(g,0xCC2e00,.012,.012,.72, Math.cos(a2)*.46,.54,Math.sin(a2)*.46, 0,0,a2+Math.PI/2);
     }
   }
-  // Stem
-  g.add(cyl(0x3B7A1A,.03,.025,.22, 0,.99,0));
-  // Leaf
-  g.add(sphere(0x2d8a1a,.14,.2,.06, .12,1.05,0, 0,0,-.45));
-  g.add(sphere(0x2d8a1a,.12,.18,.05, -.1,1.03,0, 0,0,.4));
+  C(g,0x3B7A1A,.034,.026,.24, 0,1.04,0);
+  S(g,0x2d8a1a,.15,.22,.065, .14,1.1,0, 0,0,-.48);
+  S(g,0x2d8a1a,.13,.2,.055, -.11,1.08,0, 0,0,.42);
 }
 
 function buildCucumber(g,c,a) {
-  // Main body
-  g.add(cyl(c,.17,.14,.85, 0,.48,0));
-  // Rounded ends
-  g.add(sphere(c,.17,.13,.17, 0,.91,0));
-  g.add(sphere(a,.15,.11,.15, 0,.07,0));
-  // Surface bumps in lines
-  for(let row=0;row<4;row++) {
-    const ang0 = row/4*Math.PI*2;
-    for(let j=0;j<6;j++) {
-      const yy=.18+j*.12;
-      g.add(sphere(a,.035,.028,.028, Math.cos(ang0)*.17,yy,Math.sin(ang0)*.17));
-    }
+  C(g,c,.18,.15,.88, 0,.5,0);
+  S(g,c,.18,.14,.18, 0,.95,0); S(g,a,.16,.12,.16, 0,.08,0);
+  for(let row=0;row<4;row++){
+    const ang0=row/4*Math.PI*2;
+    for(let j=0;j<7;j++) S(g,a,.038,.03,.03, Math.cos(ang0)*.18,.2+j*.11,Math.sin(ang0)*.18);
   }
-  // Tiny flower end
-  for(let i=0;i<6;i++) {
-    const a2=i/6*Math.PI*2;
-    g.add(sphere(0xd4a830,.025,.02,.02, Math.cos(a2)*.06,.06,Math.sin(a2)*.06));
+  for(let i=0;i<6;i++){
+    const a2=i/6*Math.PI*2; S(g,0xd4a830,.028,.022,.022, Math.cos(a2)*.065,.07,Math.sin(a2)*.065);
   }
-  g.rotation.z = .22;
+  g.rotation.z=.24;
 }
 
 function buildBanana(g,c,a) {
-  // Curved segments
-  const segs = 14;
-  for(let i=0;i<segs;i++) {
-    const t=i/(segs-1);
-    const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,12,10), m(i===0||i===segs-1?a:c));
-    const rx=Math.sin(t*1.35)*.42, ry=t*.82+.08;
-    mesh.scale.set(.13-.02*t, .16-.02*t, .13-.02*t);
-    mesh.position.set(rx,ry,0);
+  const N=16;
+  for(let i=0;i<N;i++){
+    const t=i/(N-1);
+    const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),mat(i===0||i===N-1?a:c));
+    mesh.scale.set(.145-.025*t, .17-.022*t, .145-.025*t);
+    mesh.position.set(Math.sin(t*1.4)*.44, t*.85+.06, 0);
     g.add(mesh);
-    // Ridge line (3 ridges of a banana)
-    if(i>0&&i<segs-1) {
-      for(let r=0;r<3;r++) {
+    if(i>0&&i<N-1){
+      for(let r=0;r<3;r++){
         const ra=r/3*Math.PI*2;
-        const rm=new THREE.Mesh(new THREE.SphereGeometry(.025,6,6),m(a));
-        rm.position.set(rx+Math.cos(ra)*.13,ry,Math.sin(ra)*.12);
+        const rm=new THREE.Mesh(new THREE.SphereGeometry(.028,6,6),mat(a));
+        rm.position.set(Math.sin(t*1.4)*.44+Math.cos(ra)*.145, t*.85+.06, Math.sin(ra)*.14);
         g.add(rm);
       }
     }
   }
-  // Stem
-  g.add(cyl(0x5a3510,.025,.025,.12, 0,.02,0));
-  g.rotation.z = -.22;
+  C(g,0x5a3510,.028,.028,.14, 0,.01,0);
+  g.rotation.z=-.2;
 }
 
-// ═══════════════════════════════════════════════════════
-// ORIENTATION
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// ORIENTATION (gyro + touch/mouse)
+// ══════════════════════════════════════════════
 let yaw=0, pitch=0, hasGyro=false;
 let gyroA=0, gyroB=90, gyroG=0;
 let tx=0, ty=0;
-const euler = new THREE.Euler(0,0,0,'YXZ');
+const eu = new THREE.Euler(0,0,0,'YXZ');
 
-window.addEventListener('deviceorientation', e => {
-  if(e.alpha!=null){ gyroA=e.alpha||0; gyroB=e.beta||90; gyroG=e.gamma||0; hasGyro=true; }
+window.addEventListener('deviceorientation', e=>{
+  if(e.alpha!=null){ gyroA=e.alpha||0; gyroB=e.beta||90; gyroG=e.gamma||0; hasGyro=true;
+    document.getElementById('dragHint').style.display='none'; }
 });
-document.addEventListener('touchstart', e => {
+document.addEventListener('touchstart', e=>{
   if(e.target.tagName==='BUTTON') return;
   tx=e.touches[0].clientX; ty=e.touches[0].clientY;
 },{passive:true});
-document.addEventListener('touchmove', e => {
+document.addEventListener('touchmove', e=>{
   if(hasGyro) return;
-  yaw  -= (e.touches[0].clientX-tx)*.004;
-  pitch -= (e.touches[0].clientY-ty)*.003;
+  yaw  -= (e.touches[0].clientX-tx)*.005;
+  pitch -= (e.touches[0].clientY-ty)*.004;
   pitch=Math.max(-1.1,Math.min(1.1,pitch));
   tx=e.touches[0].clientX; ty=e.touches[0].clientY;
 },{passive:true});
-// Mouse fallback
-let md=false,mx=0,my=0;
-document.addEventListener('mousedown',e=>{md=true;mx=e.clientX;my=e.clientY;});
+let md=false,mx2=0,my2=0;
+document.addEventListener('mousedown',e=>{ if(e.target.tagName!=='BUTTON'){md=true;mx2=e.clientX;my2=e.clientY;} });
 document.addEventListener('mouseup',()=>md=false);
 document.addEventListener('mousemove',e=>{
   if(!md)return;
-  yaw-=(e.clientX-mx)*.004; pitch-=(e.clientY-my)*.003;
+  yaw-=(e.clientX-mx2)*.005; pitch-=(e.clientY-my2)*.004;
   pitch=Math.max(-1.1,Math.min(1.1,pitch));
-  mx=e.clientX;my=e.clientY;
+  mx2=e.clientX; my2=e.clientY;
 });
 
-function applyCamOrientation(cam) {
-  if(hasGyro) {
-    euler.set(
-      THREE.MathUtils.degToRad(gyroB-90),
-     -THREE.MathUtils.degToRad(gyroA),
-     -THREE.MathUtils.degToRad(gyroG),
-      'YXZ'
-    );
+function applyOri(cam){
+  if(hasGyro){
+    eu.set(THREE.MathUtils.degToRad(gyroB-90), -THREE.MathUtils.degToRad(gyroA), -THREE.MathUtils.degToRad(gyroG),'YXZ');
   } else {
-    euler.set(pitch,yaw,0,'YXZ');
+    eu.set(pitch,yaw,0,'YXZ');
   }
-  cam.quaternion.setFromEuler(euler);
+  cam.quaternion.setFromEuler(eu);
 }
 
-// ═══════════════════════════════════════════════════════
-// PROXIMITY / REVEAL LOGIC
-// ═══════════════════════════════════════════════════════
-const REVEAL_DIST  = 4.0;  // metres — creature pops when you're this close
-const CATCH_DIST   = 3.2;
-
-const camDir  = new THREE.Vector3();
-const toZone  = new THREE.Vector3();
-
-function checkProximity() {
-  const px=camL.position.x, pz=camL.position.z;
-  let closest=null, closestD=99;
-
-  ZONES.forEach(zone => {
-    if(found.has(zone.def.id)) return;
-    const dx=zone.x-px, dz=zone.z-pz;
-    const d=Math.sqrt(dx*dx+dz*dz);
-
-    // Reveal: scale up smoothly
-    if(d < REVEAL_DIST) {
-      if(!zone.revealed) {
-        zone.revealed=true;
-        triggerRevealAnim(zone);
-      }
-    }
-
-    // Scale up proportionally while approaching
-    if(zone.revealed && zone.mesh) {
-      const t = Math.max(0, Math.min(1, (REVEAL_DIST-d)/REVEAL_DIST));
-      const s = easeOut(t);
-      zone.mesh.scale.set(s,s,s);
-    }
-
-    if(d < closestD) { closestD=d; closest=zone; }
-  });
-
-  // Nearest in view direction
+// ══════════════════════════════════════════════
+// FIND NEAREST IN VIEW
+// ══════════════════════════════════════════════
+const camDir=new THREE.Vector3();
+const toZ=new THREE.Vector3();
+function updateNearest(){
   camL.getWorldDirection(camDir);
-  let bestScore=-1, bestInView=null;
-  ZONES.forEach(zone => {
-    if(found.has(zone.def.id)||!zone.revealed) return;
-    toZone.set(zone.x-camL.position.x, 0, zone.z-camL.position.z);
-    const d=toZone.length(); if(d>8)return;
-    toZone.normalize();
-    const camDirFlat=new THREE.Vector3(camDir.x,0,camDir.z).normalize();
-    const dot=camDirFlat.dot(toZone);
-    const sc=dot-d*.04;
-    if(sc>bestScore){ bestScore=sc; bestInView=zone; }
+  let bestS=-1, best=null;
+  ZONES.forEach(z=>{
+    if(found.has(z.def.id)||!z.mesh) return;
+    toZ.set(z.x-camL.position.x,0,z.z-camL.position.z);
+    const d=toZ.length(); if(d>7)return;
+    toZ.normalize();
+    const flat=new THREE.Vector3(camDir.x,0,camDir.z).normalize();
+    const sc=flat.dot(toZ)-d*.03;
+    if(sc>bestS){bestS=sc;best=z;}
   });
+  nearZone=bestS>0.35?best:null;
 
-  nearZone=bestInView&&bestScore>0.4?bestInView:null;
-  const catchBtn=document.getElementById('catchBtn');
-  const ring=document.getElementById('revealRing');
-  const hint=document.getElementById('hint-text');
-
-  if(nearZone) {
-    const d=Math.sqrt((nearZone.x-px)**2+(nearZone.z-pz)**2);
-    if(d<CATCH_DIST && nearZone.revealed) {
-      catchBtn.style.display='block';
-      hint.textContent=`🎯 ${nearZone.def.name} is right here!`;
-      ring.classList.add('active');
-    } else {
-      catchBtn.style.display='none';
-      hint.textContent=`👀 ${nearZone.def.name} — ${nearZone.def.room}!`;
-      ring.classList.remove('active');
-    }
+  const btn=document.getElementById('catchBtn');
+  const hint=document.getElementById('hint');
+  if(nearZone){
+    const d=Math.sqrt((nearZone.x-camL.position.x)**2+(nearZone.z-camL.position.z)**2);
+    btn.style.display = d<2.8?'block':'none';
+    hint.textContent = d<2.8
+      ? `🎯 ${nearZone.def.he} – ${nearZone.def.room}!`
+      : `👀 ${nearZone.def.he} – ${nearZone.def.room}`;
   } else {
-    catchBtn.style.display='none';
-    ring.classList.remove('active');
-    const notFound=ZONES.filter(z=>!found.has(z.def.id)&&!z.revealed);
-    if(notFound.length>0) {
-      const pick=notFound[Math.floor(Date.now()/4500)%notFound.length];
-      hint.textContent=`🔍 Walk to find the ${pick.def.name} (${pick.def.room})`;
+    btn.style.display='none';
+    const rem=ZONES.filter(z=>!found.has(z.def.id));
+    if(rem.length){
+      const pick=rem[Math.floor(Date.now()/5000)%rem.length];
+      hint.textContent=`🔍 חַפֵּשׂ אֶת הַ${pick.def.he} – ${pick.def.room}`;
     } else {
-      const revealed=ZONES.filter(z=>!found.has(z.def.id)&&z.revealed);
-      if(revealed.length>0)
-        hint.textContent=`👉 Walk closer to the ${revealed[0].def.name}!`;
-      else hint.textContent=`✅ All found! Amazing!`;
+      hint.textContent='✅ מָצָאתָ הַכֹּל!';
     }
   }
 }
 
-function easeOut(t) { return 1-Math.pow(1-t,3); }
-
-function triggerRevealAnim(zone) {
-  // Particle burst from position (simple: just a scale bounce)
-  let frame2=0;
-  const iv=setInterval(()=>{
-    frame2++;
-    if(frame2<8) {
-      const s=1.2+Math.sin(frame2*.8)*.3;
-      zone.mesh.scale.set(s,s,s);
-    } else clearInterval(iv);
-  },40);
-}
-
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // CATCH
-// ═══════════════════════════════════════════════════════
-function catchIt() {
-  if(!nearZone||found.has(nearZone.def.id)) return;
+// ══════════════════════════════════════════════
+function catchIt(){
+  if(!nearZone||found.has(nearZone.def.id))return;
   const def=nearZone.def;
   found.add(def.id);
   score+=def.pts;
   document.getElementById('scoreVal').textContent=score;
 
-  const obj=nearZone.mesh;
-  let t=0;
+  const obj=nearZone.mesh; let t=0;
   const iv=setInterval(()=>{
-    t+=.07;
-    const s=1+t*.7; obj.scale.set(s,s,s);
-    if(t>=1){ clearInterval(iv); obj.visible=false; }
-  },22);
+    t+=.07; const s=1+t*.7; obj.scale.set(s,s,s);
+    if(t>=1){clearInterval(iv);obj.visible=false;}
+  },20);
 
   const emojis=[...found].map(id=>DEFS.find(d=>d.id===id)?.emoji).join('');
-  document.getElementById('found-box').textContent=emojis+'  '+(DEFS.length-found.size)+' left';
+  document.getElementById('foundBox').textContent=emojis+'  '+(DEFS.length-found.size)+' נוֹתָרוּ';
 
-  document.getElementById('popup-emoji').textContent=def.emoji;
-  document.getElementById('popup-name').textContent=def.name+'!';
-  document.getElementById('popup-msg').textContent=`Found in the ${def.room}! +${def.pts} ⭐`;
+  document.getElementById('popEmoji').textContent=def.emoji;
+  document.getElementById('popName').textContent=def.he+'!';
+  document.getElementById('popMsg').textContent=`מָצָאתָ ${def.he}\nב${def.room}!\n+${def.pts} ⭐`;
   document.getElementById('popup').style.display='flex';
   document.getElementById('catchBtn').style.display='none';
-  document.getElementById('revealRing').classList.remove('active');
-
   if(found.size>=DEFS.length) setTimeout(showWin,1600);
 }
-
 function closePopup(){ document.getElementById('popup').style.display='none'; }
 function showWin(){
   closePopup();
-  document.getElementById('win-msg').textContent=`All ${DEFS.length} found! Total: ${score} ⭐`;
+  document.getElementById('winMsg').textContent=`מָצָאתָ אֶת כׇּל ${DEFS.length} הַיְּצוּרִים!\nסַךְ הַכֹּל: ${score} ⭐`;
   document.getElementById('win').style.display='flex';
 }
 function resetGame(){
   found.clear(); score=0;
   document.getElementById('scoreVal').textContent='0';
-  document.getElementById('found-box').textContent='0 / 12 found';
+  document.getElementById('foundBox').textContent='0 / 12 נִמְצְאוּ';
   document.getElementById('win').style.display='none';
-  ZONES.forEach(z=>{ z.revealed=false; if(z.mesh){z.mesh.visible=true;z.mesh.scale.set(0,0,0);} });
+  ZONES.forEach(z=>{ if(z.mesh){z.mesh.visible=true;z.mesh.scale.set(1,1,1);} });
 }
 
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // VR
-// ═══════════════════════════════════════════════════════
-function toggleVR() {
+// ══════════════════════════════════════════════
+function toggleVR(){
   vrMode=!vrMode;
-  document.body.classList.toggle('vr-mode',vrMode);
-  document.getElementById('vrBtn').textContent=vrMode?'📱 Normal':'📦 Cardboard';
-  const stream=document.getElementById('videoBg').srcObject;
-  if(vrMode&&stream){
-    document.getElementById('vrVidL').srcObject=stream;
-    document.getElementById('vrVidR').srcObject=stream;
-  }
+  document.body.classList.toggle('vr',vrMode);
+  document.getElementById('vrBtn').textContent=vrMode?'📱 רָגִיל':'📦 קַרְדְּבּוֹרְד';
+  const s=document.getElementById('videoBg').srcObject;
+  if(vrMode&&s){ document.getElementById('vrVL').srcObject=s; document.getElementById('vrVR').srcObject=s; }
   onResize();
 }
 
-// ═══════════════════════════════════════════════════════
-// SIMULATE WALKING (phone movement = player movement)
-// ═══════════════════════════════════════════════════════
-// Since we can't get GPS indoors, we simulate movement:
-// player auto-walks slowly in the direction they're looking.
-// They control speed by tapping/holding the screen (not a button).
-let autoWalk = false;
-let walkSpeed = 0;
-document.addEventListener('touchstart', e => {
-  if(e.target.tagName==='BUTTON') return;
-  walkSpeed = 0.018;
-},{passive:true});
-document.addEventListener('touchend', () => { walkSpeed=0; },{passive:true});
-// Mouse hold
-document.addEventListener('mousedown', e => { if(e.target.tagName!=='BUTTON') walkSpeed=0.018; });
-document.addEventListener('mouseup', () => walkSpeed=0);
-
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // ANIMATE
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 let frame=0;
 function animate(){
   requestAnimationFrame(animate);
   frame++;
 
-  // Move player forward if holding screen
-  if(walkSpeed>0) {
-    const fwd=new THREE.Vector3(0,0,-1).applyQuaternion(camL.quaternion);
-    fwd.y=0; fwd.normalize();
-    camL.position.addScaledVector(fwd, walkSpeed);
-    camR.position.copy(camL.position);
-  }
-
-  // Gentle idle bob on creatures
-  ZONES.forEach((zone,i)=>{
-    if(!zone.mesh||!zone.revealed) return;
-    const base=zone.y;
-    zone.mesh.position.y=base+Math.sin(frame*.028+i*1.1)*.05;
-    zone.mesh.rotation.y+=.006;
+  // Gentle bob & slow rotation on all visible creatures
+  ZONES.forEach((z,i)=>{
+    if(!z.mesh||!z.mesh.visible)return;
+    z.mesh.position.y = z.y + Math.sin(frame*.026+i*1.05)*.055;
+    z.mesh.rotation.y += .007;
   });
 
-  applyCamOrientation(camL);
-  if(frame%6===0) checkProximity();
+  applyOri(camL);
+  if(frame%8===0) updateNearest();
 
   renderer.clear();
   if(vrMode){
-    const W=window.innerWidth, H=window.innerHeight;
+    const W=window.innerWidth,H=window.innerHeight;
     camL.aspect=(W/2)/H; camL.updateProjectionMatrix();
     renderer.setViewport(0,0,W/2,H); renderer.setScissor(0,0,W/2,H);
     renderer.setScissorTest(true); renderer.render(scene,camL);
     camR.quaternion.copy(camL.quaternion);
-    camR.position.set(camL.position.x+.032,camL.position.y,camL.position.z);
+    camR.position.set(camL.position.x+.034,camL.position.y,camL.position.z);
     camR.aspect=(W/2)/H; camR.updateProjectionMatrix();
     renderer.setViewport(W/2,0,W/2,H); renderer.setScissor(W/2,0,W/2,H);
     renderer.render(scene,camR);
@@ -942,12 +758,12 @@ function animate(){
 
 function onResize(){
   renderer.setSize(window.innerWidth,window.innerHeight);
-  camL.aspect=window.innerWidth/window.innerHeight; camL.updateProjectionMatrix();
+  if(!vrMode){ camL.aspect=window.innerWidth/window.innerHeight; camL.updateProjectionMatrix(); }
 }
 
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // START
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 async function startGame(){
   document.getElementById('loading').style.display='none';
   try {
@@ -964,10 +780,10 @@ async function startGame(){
     try{ await DeviceOrientationEvent.requestPermission(); }catch(e){}
   }
   initThree();
+  // Show drag hint on non-gyro devices
   setTimeout(()=>{
-    if(!hasGyro)
-      document.getElementById('hint-text').textContent='👆 Hold screen & drag to look around!';
-  },2200);
+    if(!hasGyro){ document.getElementById('dragHint').style.display='block'; }
+  },1800);
 }
 </script>
 </body>
