@@ -7,17 +7,12 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#000; overflow:hidden; font-family:'David Libre','Frank Ruhl Libre',serif; touch-action:none; }
-#videoBg { position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+/* video element hidden — used only as texture source, not displayed */
+#videoBg { display:none; }
 #noCamBg { position:fixed; inset:0; z-index:0; display:none; background:linear-gradient(160deg,#0f2027,#203a43,#2c5364); }
 #gameCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:1; background:transparent; }
 
-/* VR */
-body.vr #videoBg { display:none; }
-#vrL,#vrR { display:none; position:fixed; top:0; width:50%; height:100%; overflow:hidden; z-index:0; }
-#vrL{left:0;} #vrR{right:0;}
-#vrL video,#vrR video{width:200%;height:100%;object-fit:cover;}
-#vrR video{margin-left:-100%;}
-body.vr #vrL,body.vr #vrR{display:block;}
+/* VR divider line */
 #vrLine{display:none;position:fixed;left:50%;top:0;bottom:0;width:4px;background:#000;z-index:9;transform:translateX(-50%);}
 body.vr #vrLine{display:block;}
 
@@ -93,8 +88,6 @@ body.vr #vrLine{display:block;}
 
 <video id="videoBg" autoplay playsinline muted></video>
 <div id="noCamBg"></div>
-<div id="vrL"><video id="vrVL" autoplay playsinline muted></video></div>
-<div id="vrR"><video id="vrVR" autoplay playsinline muted></video></div>
 <div id="vrLine"></div>
 <canvas id="gameCanvas"></canvas>
 
@@ -163,16 +156,32 @@ let score=0;
 const found=new Set();
 let nearZone=null;
 
+// Background camera feed rendered as a texture plane
+let bgScene, bgCam, bgMesh, videoTex;
+
+function initBgScene(videoEl) {
+  bgScene = new THREE.Scene();
+  bgCam   = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+  videoTex = new THREE.VideoTexture(videoEl);
+  videoTex.minFilter = THREE.LinearFilter;
+  videoTex.magFilter = THREE.LinearFilter;
+  // Flip horizontally so it's not mirrored (front cam) — back cam is fine
+  const bgGeo = new THREE.PlaneGeometry(2,2);
+  const bgMat = new THREE.MeshBasicMaterial({map: videoTex, depthTest:false, depthWrite:false});
+  bgMesh = new THREE.Mesh(bgGeo, bgMat);
+  bgScene.add(bgMesh);
+}
+
 function initThree() {
   scene = new THREE.Scene();
   camL = new THREE.PerspectiveCamera(68, window.innerWidth/window.innerHeight, 0.05, 100);
   camR = new THREE.PerspectiveCamera(68, (window.innerWidth/2)/window.innerHeight, 0.05, 100);
   camL.position.set(0,1.5,0);
 
-  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gameCanvas'), alpha:true, antialias:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5)); // higher pixel ratio for sharpness
+  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gameCanvas'), antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x000000, 0);
+  renderer.setClearColor(0x000000, 1);
   renderer.autoClear = false;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -745,8 +754,7 @@ function toggleVR(){
   vrMode=!vrMode;
   document.body.classList.toggle('vr',vrMode);
   document.getElementById('vrBtn').textContent=vrMode?'📱 רָגִיל':'📦 קַרְדְּבּוֹרְד';
-  const s=document.getElementById('videoBg').srcObject;
-  if(vrMode&&s){document.getElementById('vrVL').srcObject=s;document.getElementById('vrVR').srcObject=s;}
+  document.getElementById('vrLine').style.display=vrMode?'block':'none';
   onResize();
 }
 
@@ -764,21 +772,39 @@ function animate(){
   });
   applyOri(camL);
   if(frame%8===0)updateNearest();
+
+  // Update video texture every frame so the background is always live
+  if(videoTex) videoTex.needsUpdate = true;
+
   renderer.clear();
+
   if(vrMode){
     const W=window.innerWidth,H=window.innerHeight;
-    camL.aspect=(W/2)/H;camL.updateProjectionMatrix();
-    renderer.setViewport(0,0,W/2,H);renderer.setScissor(0,0,W/2,H);
-    renderer.setScissorTest(true);renderer.render(scene,camL);
+
+    // LEFT EYE
+    renderer.setViewport(0,0,W/2,H); renderer.setScissor(0,0,W/2,H); renderer.setScissorTest(true);
+    // draw bg
+    if(bgScene) renderer.render(bgScene, bgCam);
+    renderer.clearDepth();
+    camL.aspect=(W/2)/H; camL.updateProjectionMatrix();
+    renderer.render(scene,camL);
+
+    // RIGHT EYE
     camR.quaternion.copy(camL.quaternion);
     camR.position.set(camL.position.x+.034,1.5,camL.position.z);
-    camR.aspect=(W/2)/H;camR.updateProjectionMatrix();
-    renderer.setViewport(W/2,0,W/2,H);renderer.setScissor(W/2,0,W/2,H);
+    camR.aspect=(W/2)/H; camR.updateProjectionMatrix();
+    renderer.setViewport(W/2,0,W/2,H); renderer.setScissor(W/2,0,W/2,H);
+    if(bgScene) renderer.render(bgScene, bgCam);
+    renderer.clearDepth();
     renderer.render(scene,camR);
+
     renderer.setScissorTest(false);
   } else {
-    camL.aspect=window.innerWidth/window.innerHeight;camL.updateProjectionMatrix();
     renderer.setViewport(0,0,window.innerWidth,window.innerHeight);
+    // draw live camera bg
+    if(bgScene) renderer.render(bgScene, bgCam);
+    renderer.clearDepth();
+    camL.aspect=window.innerWidth/window.innerHeight; camL.updateProjectionMatrix();
     renderer.render(scene,camL);
   }
 }
@@ -792,20 +818,29 @@ function onResize(){
 // ─────────────────────────────────────────────────────
 async function startGame(){
   document.getElementById('loading').style.display='none';
+  const videoEl = document.getElementById('videoBg');
   try {
     const stream=await navigator.mediaDevices.getUserMedia({
       video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:false
     });
-    document.getElementById('videoBg').srcObject=stream;
-    await document.getElementById('videoBg').play().catch(()=>{});
+    videoEl.srcObject=stream;
+    videoEl.play().catch(()=>{});
+    // Wait for video to have real dimensions before creating texture
+    await new Promise(res=>{
+      if(videoEl.readyState>=2) return res();
+      videoEl.addEventListener('canplay', res, {once:true});
+      videoEl.addEventListener('loadeddata', res, {once:true});
+    });
+    initThree();
+    initBgScene(videoEl);
   } catch(e){
     document.getElementById('noCamBg').style.display='block';
+    initThree();
   }
   if(typeof DeviceOrientationEvent!=='undefined'&&
      typeof DeviceOrientationEvent.requestPermission==='function'){
     try{await DeviceOrientationEvent.requestPermission();}catch(e){}
   }
-  initThree();
 }
 </script>
 </body>
